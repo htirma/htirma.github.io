@@ -54,12 +54,14 @@
   // Stationary "vibing" pair, front-facing (mobile, bottom-right).
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_VIBE = [
-    "..HHHHH..",".HHHHHHH.","HHHHHHHHH",".HKKKKKH.",".HGGKGGH.",".HKKKKKH.",
-    "..KKKKK..",".JJJJJJJ.","JJJJJJJJJ","JJJJJJJJJ","JJJJJJJJJ",".JJJJJJJ.",
+    "..HHHHH..",".HHHHHHH.","HHHHHHHHH","HKKKKKKKH",
+    "HGGGKGGGH","HGnGGGnGH","HGGGKGGGH","HKKKKKKKH",
+    ".KKKKKKK.","..KKKKK..",".JJJJJJJ.","JJJJJJJJJ",
+    "JJJJJJJJJ","JJJJJJJJJ","JJJJJJJJJ",".JJJJJJJ.",
     "..PPPPP..",".PP...PP.",".SS...SS."
   ];
   var D_SIT = [
-    ".O.....O.",".OO...OO.","OOO...OOO",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
+    "..O...O..",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
     ".OcccccO.","OcccccccO","OcccccccO",".OcccccO.",".OO...OO."
   ];
 
@@ -227,8 +229,8 @@
     for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*treePix,promY-tm.length*treePix,treePix,false);}
   }
   function drawVibe(){
-    var cp=CP, aw=P_VIBE[0].length, ah=P_VIBE.length, dw=D_SIT[0].length, dh=D_SIT.length;
-    var base=H-16, ax=W-18-aw*cp, dxx=ax-7-dw*cp;
+    var cp=CP+2, aw=P_VIBE[0].length, ah=P_VIBE.length, dw=D_SIT[0].length, dh=D_SIT.length;
+    var base=H-16, ax=W-18-aw*cp, dxx=ax-8-dw*cp;
     spr(D_SIT,dxx,base-dh*cp,cp,false);
     spr(P_VIBE,ax,base-ah*cp,cp,false);
   }
