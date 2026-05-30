@@ -51,6 +51,13 @@
   ];
   var BOAT = ["...##......","..####.....","###########",".#########."];
   var HEART = [".#.#.","#####","#####",".###.","..#.."];
+  // Stationary "vibing" pair, front-facing (mobile, bottom-right)
+  var P_VIBE = [
+    "..HHHHHH..",".HHHHHHHH.","HHHHHHHHHH",".HKKKKKKH.",".HGGKKGGH.",".HKKKKKKH.",
+    "..KKKKKK..",".JJJJJJJJ.","JJJJJJJJJJ","JJJJJJJJJJ","JJJJJJJJJJ",".JJJJJJJJ.",
+    "..PPPPPP..","..PP..PP..","..SS..SS.."
+  ];
+  var D_SIT = ["O......O","OO....OO",".OOOOOO.",".OnOOnO.",".OOnnOO.",".OccccO.","OOccccOO","OOccccOO",".OO..OO."];
 
   function pal() {
     var d = isDark();
@@ -104,18 +111,11 @@
     if(main){var r=main.getBoundingClientRect();safeL=r.left;safeR=r.right;cb=r.bottom;ctp=r.top;}
     else{safeL=safeR=-1;cb=H*0.6;ctp=H*0.1;}
     contentTopY=ctp;
-    if(isMobile){
-      // mobile: canal sits in the bottom gap below the content (full width)
-      var bandTop=Math.max(cb+12, H*0.58);
-      waterTopRow=Math.round((bandTop+(H-bandTop)*0.42)/PIXEL);
-      waterBotRow=Math.round((H-8)/PIXEL);
-      return {baseRow:waterTopRow-1, houseTop:Math.round(bandTop/PIXEL)};
-    }
-    var wTopY=cb+6, maxWater=88;
+    var wTopY=cb+6, maxWater=isMobile?0:88;
     var wBotY=Math.min(wTopY+maxWater, walkerTopY-30);
     if(wBotY<wTopY+18)wBotY=wTopY+18;
     waterTopRow=Math.round(wTopY/PIXEL); waterBotRow=Math.round(wBotY/PIXEL);
-    return {baseRow:waterTopRow-1, houseTop:0};
+    return {baseRow:waterTopRow-1};
   }
 
   function build(L){
@@ -123,7 +123,7 @@
     for(var i=0;i<C.houses.length;i++)byColor.push([]);
     var R=srng(20101207);
 
-    function put(ci,cx,cy){if(cx<0||cx>=cellsX||(!isMobile&&inSafe(cx)))return;byColor[ci].push(cx,cy);if(colTop[cx]<0||cy<colTop[cx]){colTop[cx]=cy;colCol[cx]=ci;}}
+    function put(ci,cx,cy){if(cx<0||cx>=cellsX||inSafe(cx))return;byColor[ci].push(cx,cy);if(colTop[cx]<0||cy<colTop[cx]){colTop[cx]=cy;colCol[cx]=ci;}}
     function gable(ci,c,w,top,rv){            // distinct Amsterdam rooflines
       var t=Math.floor(rv*4),mid=c+(w>>1),x,y,i;
       if(t===0){ for(i=0;i*2<w&&i<5;i++)for(x=c+i;x<=c+w-1-i;x++)put(ci,x,top-1-i); }                 // puntgevel (pointed)
@@ -132,27 +132,27 @@
       else { var l2=c,r2=c+w-1,k=0;y=top-1; while(k<3&&l2<r2){for(x=l2;x<=r2;x++)put(ci,x,y);y--;l2++;r2--;k++;} for(x=l2;x<=r2;x++)put(ci,x,y); } // klokgevel (bell)
     }
 
-    // canal houses — desktop: flank the content; mobile: a strip below it
-    var base=L.baseRow,c=0,prev=-1,hcap=L.houseTop||0;
-    while(c<cellsX){
-      var w=9+Math.floor(R()*7);              // 9..15 — narrow
-      var h=20+Math.floor(R()*13);            // 20..32 — tall
-      var ci=Math.floor(R()*C.houses.length); if(ci===prev)ci=(ci+1)%C.houses.length; prev=ci;
-      var top=Math.max(hcap,base-h);
-      for(var cy=top;cy<=base;cy++)for(var cx=c;cx<c+w;cx++){
-        if(cx<0||cx>=cellsX||(!isMobile&&inSafe(cx)))continue;
-        var edge=(cx===c||cx===c+w-1||cy===base),fl=base-cy;
-        var win=!edge&&((cx-c)%2===1)&&(fl%4===1)&&fl>1&&fl<(base-top)-1;
-        if(win){if(R()<0.4)lit.push(cx,cy);}
-        else put(ci,cx,cy);
-      }
-      if(!isMobile)gable(ci,c,w,top,R());      // gables only on desktop (mobile band is short)
-      c+=w;                                    // shared walls — touching
-    }
-    var by=(waterTopRow+1)*PIXEL;
-    boats.push({x:Math.round(W*0.15),y:by,ph:0});
-    if(!isMobile)boats.push({x:Math.round(W*0.8),y:by,ph:2.3});
     if(!isMobile){
+      // narrow, tall canal houses, touching (terraced), with varied gables
+      var base=L.baseRow,c=0,prev=-1;
+      while(c<cellsX){
+        var w=9+Math.floor(R()*7);
+        var h=20+Math.floor(R()*13);
+        var ci=Math.floor(R()*C.houses.length); if(ci===prev)ci=(ci+1)%C.houses.length; prev=ci;
+        var top=base-h;
+        for(var cy=top;cy<=base;cy++)for(var cx=c;cx<c+w;cx++){
+          if(cx<0||cx>=cellsX||inSafe(cx))continue;
+          var edge=(cx===c||cx===c+w-1||cy===base),fl=base-cy;
+          var win=!edge&&((cx-c)%2===1)&&(fl%4===1)&&fl>1&&fl<h-1;
+          if(win){if(R()<0.4)lit.push(cx,cy);}
+          else put(ci,cx,cy);
+        }
+        gable(ci,c,w,top,R());
+        c+=w;
+      }
+      var by=(waterTopRow+1)*PIXEL;
+      boats.push({x:Math.round(W*0.15),y:by,ph:0});
+      boats.push({x:Math.round(W*0.8),y:by,ph:2.3});
       var tx=W*(0.04+R()*0.06);
       while(tx<W-20){ trees.push({x:Math.round(tx),v:R()<0.5?0:1}); tx+=W*(0.12+R()*0.16); }
     }
@@ -209,16 +209,23 @@
   }
 
   function drawScene(t){
+    if(isMobile)return;          // mobile uses a stationary vibe sprite, not the canal
     var i,cx,wr,ci;
     for(ci=0;ci<byColor.length;ci++){var a=byColor[ci],rgb=C.houses[ci];ctx.fillStyle="rgba("+rgb[0]+","+rgb[1]+","+rgb[2]+","+C.houseA+")";for(i=0;i<a.length;i+=2)cell(a[i],a[i+1]);}
     ctx.fillStyle=C.win;for(i=0;i<lit.length;i+=2)cell(lit[i],lit[i+1]);
     var wob=Math.sin(t*0.0005);
     for(cx=0;cx<cellsX;cx++){if(colTop[cx]<0)continue;var rg=C.houses[colCol[cx]];ctx.fillStyle="rgba("+rg[0]+","+rg[1]+","+rg[2]+","+C.reflA+")";var depth=Math.min(5,waterBotRow-waterTopRow);for(var k=1;k<=depth;k++){if(Math.sin(cx*0.3+t*0.00055+k)<0.35)continue;cell(cx+Math.round(wob+Math.sin(t*0.00055+cx*0.2)),waterTopRow+k);}}
     ctx.fillStyle=C.water;var ph=t*0.00042;
-    for(wr=waterTopRow;wr<=waterBotRow;wr++)for(cx=0;cx<cellsX;cx++){if(!isMobile&&inSafe(cx))continue;if(Math.sin(cx*0.22+ph+wr*0.7)>0.82)cell(cx,wr);}
+    for(wr=waterTopRow;wr<=waterBotRow;wr++)for(cx=0;cx<cellsX;cx++){if(inSafe(cx))continue;if(Math.sin(cx*0.22+ph+wr*0.7)>0.82)cell(cx,wr);}
     for(i=0;i<boats.length;i++){var bb=boats[i],yy=bb.y+Math.round(Math.sin(t*0.0008+bb.ph)*PIXEL);sprC(BOAT,bb.x,yy,PIXEL,C.boat);}
     ctx.fillStyle=C.quay;ctx.fillRect(0,promY,W,Math.max(2,PIXEL-1));
     for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*treePix,promY-tm.length*treePix,treePix,false);}
+  }
+  function drawVibe(){
+    var cp=CP+1, aw=P_VIBE[0].length, ah=P_VIBE.length, dw=D_SIT[0].length, dh=D_SIT.length;
+    var base=H-14, ax=W-16-aw*cp, dxx=ax-6-dw*cp;
+    spr(D_SIT,dxx,base-dh*cp,cp,false);
+    spr(P_VIBE,ax,base-ah*cp,cp,false);
   }
 
   function drawPair(t){
@@ -267,8 +274,8 @@
   function fetchWeather(){try{fetch("https://api.open-meteo.com/v1/forecast?latitude=52.3676&longitude=4.9041&current=weather_code").then(function(r){return r.json();}).then(function(j){var code=(j&&j.current&&j.current.weather_code)|0;WX.code=code;mapWeather(code);buildSky();}).catch(function(){});}catch(e){}}
 
   var last=0,raf=0;
-  function frame(t){var dt=last?Math.min(0.05,(t-last)/1000):0.016;last=t;if(SHOW_WALKER)update(dt);updateSky(dt);ctx.clearRect(0,0,W,H);drawSky(t);drawScene(t);if(SHOW_WALKER)drawPair(t);raf=requestAnimationFrame(frame);}
-  function start(){resize();last=0;if(reduceMotion){ctx.clearRect(0,0,W,H);drawSky(1500);drawScene(1500);if(SHOW_WALKER)drawPair(1500);return;}cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);}
+  function frame(t){var dt=last?Math.min(0.05,(t-last)/1000):0.016;last=t;if(SHOW_WALKER)update(dt);updateSky(dt);ctx.clearRect(0,0,W,H);drawSky(t);drawScene(t);if(isMobile)drawVibe();if(SHOW_WALKER)drawPair(t);raf=requestAnimationFrame(frame);}
+  function start(){resize();last=0;if(reduceMotion){ctx.clearRect(0,0,W,H);drawSky(1500);drawScene(1500);if(isMobile)drawVibe();if(SHOW_WALKER)drawPair(1500);return;}cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);}
 
   var rt;
   window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(start,150);});
