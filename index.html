@@ -232,15 +232,17 @@
     @media (max-width: 540px) {
       body {
         justify-content: flex-start;
-        padding: max(20px, env(safe-area-inset-top, 0)) 22px max(16px, env(safe-area-inset-bottom, 0));
+        overscroll-behavior: none;
+        padding: max(16px, env(safe-area-inset-top, 0)) 18px max(12px, env(safe-area-inset-bottom, 0));
       }
       .avatar { width: 60px; height: 60px; margin-bottom: 16px; }
       .wordmark { font-size: 21px; margin-bottom: 20px; }
       h1 { font-size: 23px; line-height: 29px; margin-bottom: 22px; }
       .block { margin-bottom: 20px; }
       .eyebrow { margin-bottom: 11px; }
-      .roster { gap: 6px 12px; }
-      .block--now .roster { font-size: 15px; }
+      .roster { gap: 4px 7px; }
+      .block--now .roster { font-size: 14px; }
+      .block--before .roster { font-size: 12px; }
       .block--now .note { margin-top: 8px; }
       .offer { max-width: none; padding-top: 22px; margin: 0 0 22px; }
       .offer p + p { margin-top: 10px; }
