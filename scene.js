@@ -53,12 +53,12 @@
   var HEART = [".#.#.","#####","#####",".###.","..#.."];
   // Stationary "vibing" pair, front-facing (mobile, bottom-right).
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
-  var P_VIBE = [
-    "..HHHHH..",".HHHHHHH.","HHHHHHHHH","HKKKKKKKH",
-    "HGGGKGGGH","HGKGGGKGH","HGGGKGGGH","HKKKKKKKH",
-    ".KKKKKKK.","..KKKKK..",".JJJJJJJ.","JJJJJJJJJ",
-    "JJJJJJJJJ","JJJJJJJJJ","JJJJJJJJJ",".JJJJJJJ.",
-    "..PPPPP..",".PP...PP.",".SS...SS."
+  var P_SIT = [
+    "...HHHHH...","..HHHHHHH..",".HHHHHHHHH.","HHHHHHHHHHH",
+    "HKKKKKKKKKH","HGGGGKGGGGH","HGKnGGGnKGH","HGGGGKGGGGH",
+    "HKKKKKKKKKH",".KKKKKKKKK.","...KKKKK...","...KKKKK...",
+    ".JJJJJJJJJ.",".JJ.JJJ.JJ.",".JJ.JJJ.JJ.",".KK.JJJ.KK.",
+    "...JJJJJ...","..PP...PP..","..SS...SS.."
   ];
   var D_SIT = [
     "..O...O..",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
@@ -161,7 +161,7 @@
       boats.push({x:Math.round(W*0.15),y:by,ph:0});
       boats.push({x:Math.round(W*0.8),y:by,ph:2.3});
       var tx=W*(0.04+R()*0.06);
-      while(tx<W-20){ trees.push({x:Math.round(tx),v:R()<0.5?0:1}); tx+=W*(0.12+R()*0.16); }
+      while(tx<W-20){ if(Math.abs(tx-W/2)>170)trees.push({x:Math.round(tx),v:R()<0.5?0:1}); tx+=W*(0.12+R()*0.16); }
     }
     buildSky();
   }
@@ -228,11 +228,37 @@
     ctx.fillStyle=C.quay;ctx.fillRect(0,promY,W,Math.max(2,PIXEL-1));
     for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*treePix,promY-tm.length*treePix,treePix,false);}
   }
-  function drawVibe(){
-    var cp=CP+1, aw=P_VIBE[0].length, ah=P_VIBE.length, dw=D_SIT[0].length, dh=D_SIT.length;
-    var base=H-16, ax=W-18-aw*cp, dxx=ax-8-dw*cp;
-    spr(D_SIT,dxx,base-dh*cp,cp,false);
-    spr(P_VIBE,ax,base-ah*cp,cp,false);
+  function cell2(ox,oy,col,row,cp){ctx.fillRect(ox+col*cp,oy+row*cp,cp,cp);}
+  function drawBench(x,seatY,w,ground){
+    var P=PIXEL;ctx.fillStyle=C.T;
+    ctx.fillRect(x,seatY-P*4,w,P);                         // back rail
+    ctx.fillRect(x,seatY-P*4,P,P*4);                       // left post
+    ctx.fillRect(x+w-P,seatY-P*4,P,P*4);                   // right post
+    ctx.fillRect(x,seatY,w,P*2);                           // seat plank
+    ctx.fillRect(x+P*2,seatY+P*2,P,ground-(seatY+P*2));    // left leg
+    ctx.fillRect(x+w-P*3,seatY+P*2,P,ground-(seatY+P*2));  // right leg
+  }
+  function drawChill(t){
+    var cp=CP+1, aw=P_SIT[0].length, ah=P_SIT.length, dw=D_SIT[0].length, dh=D_SIT.length;
+    var gap=2*cp, pairW=dw*cp+gap+aw*cp;
+    var ground=isMobile?(H-12):promY;
+    var cx=isMobile?(W-16-pairW):Math.round(W/2-pairW/2);
+    var seatY=ground-2*cp;
+    drawBench(cx-cp,seatY,pairW+2*cp,ground);
+    var bobA=Math.round(Math.sin(t*0.0016)*2), bobD=Math.round(Math.sin(t*0.0016+1.7)*2);
+    var sandoX=cx, amrithX=cx+dw*cp+gap;
+    var dy=seatY-dh*cp+bobD, ay=ground-ah*cp+bobA;
+    spr(D_SIT,sandoX,dy,cp,false);
+    spr(P_SIT,amrithX,ay,cp,false);
+    // expressions: blink + a slow cycle of moods
+    var blink=Math.sin(t*0.0009)>0.965, dblink=Math.sin(t*0.0011+2)>0.965, mood=Math.floor(t/3200)%3;
+    if(blink){ctx.fillStyle=C.K;cell2(amrithX,ay,3,6,cp);cell2(amrithX,ay,7,6,cp);}
+    ctx.fillStyle=C.n;
+    if(mood===1){cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,6,9,cp);cell2(amrithX,ay,5,10,cp);}     // smile
+    else if(mood===2){cell2(amrithX,ay,5,9,cp);cell2(amrithX,ay,6,9,cp);cell2(amrithX,ay,5,10,cp);cell2(amrithX,ay,6,10,cp);} // open
+    else{cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,5,9,cp);cell2(amrithX,ay,6,9,cp);}              // neutral
+    if(dblink){ctx.fillStyle=C.O;cell2(sandoX,dy,2,3,cp);cell2(sandoX,dy,6,3,cp);}
+    if(mood===1){ctx.fillStyle=C.heart;cell2(sandoX,dy,4,5,cp);}                                   // happy tongue
   }
 
   function drawPair(t){
@@ -281,8 +307,8 @@
   function fetchWeather(){try{fetch("https://api.open-meteo.com/v1/forecast?latitude=52.3676&longitude=4.9041&current=weather_code").then(function(r){return r.json();}).then(function(j){var code=(j&&j.current&&j.current.weather_code)|0;WX.code=code;mapWeather(code);buildSky();}).catch(function(){});}catch(e){}}
 
   var last=0,raf=0;
-  function frame(t){var dt=last?Math.min(0.05,(t-last)/1000):0.016;last=t;if(SHOW_WALKER)update(dt);updateSky(dt);ctx.clearRect(0,0,W,H);drawSky(t);drawScene(t);if(isMobile)drawVibe();if(SHOW_WALKER)drawPair(t);raf=requestAnimationFrame(frame);}
-  function start(){resize();last=0;if(reduceMotion){ctx.clearRect(0,0,W,H);drawSky(1500);drawScene(1500);if(isMobile)drawVibe();if(SHOW_WALKER)drawPair(1500);return;}cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);}
+  function frame(t){var dt=last?Math.min(0.05,(t-last)/1000):0.016;last=t;updateSky(dt);ctx.clearRect(0,0,W,H);drawSky(t);drawScene(t);drawChill(t);raf=requestAnimationFrame(frame);}
+  function start(){resize();last=0;if(reduceMotion){ctx.clearRect(0,0,W,H);drawSky(1500);drawScene(1500);drawChill(1500);return;}cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);}
 
   var rt;
   window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(start,150);});
