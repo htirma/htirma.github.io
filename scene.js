@@ -55,7 +55,7 @@
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
     "...HHHHH...","..HHHHHHH..",".HHHHHHHHH.","HHHHHHHHHHH",
-    "HKKKKKKKKKH","HGGGGKGGGGH","HGKnGGGnKGH","HGGGGKGGGGH",
+    "HKKKKKKKKKH","HKGGGKGGGKH","HKGnGGGnGKH","HKKKKKKKKKH",
     "HKKKKKKKKKH",".KKKKKKKKK.","...KKKKK...","...KKKKK...",
     ".JJJJJJJJJ.",".JJ.JJJ.JJ.",".JJ.JJJ.JJ.",".KK.JJJ.KK.",
     "...JJJJJ...","..PP...PP..","..SS...SS.."
@@ -254,9 +254,9 @@
     var blink=Math.sin(t*0.0009)>0.965, dblink=Math.sin(t*0.0011+2)>0.965, mood=Math.floor(t/3200)%3;
     if(blink){ctx.fillStyle=C.K;cell2(amrithX,ay,3,6,cp);cell2(amrithX,ay,7,6,cp);}
     ctx.fillStyle=C.n;
-    if(mood===1){cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,6,9,cp);cell2(amrithX,ay,5,10,cp);}     // smile
-    else if(mood===2){cell2(amrithX,ay,5,9,cp);cell2(amrithX,ay,6,9,cp);cell2(amrithX,ay,5,10,cp);cell2(amrithX,ay,6,10,cp);} // open
-    else{cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,5,9,cp);cell2(amrithX,ay,6,9,cp);}              // neutral
+    if(mood===1){cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,6,9,cp);cell2(amrithX,ay,5,10,cp);}     // smile ‿
+    else if(mood===2){cell2(amrithX,ay,5,9,cp);}                                                    // small "o"
+    else{cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,5,9,cp);}                                        // neutral line
     if(dblink){ctx.fillStyle=C.O;cell2(sandoX,dy,2,3,cp);cell2(sandoX,dy,6,3,cp);}
     if(mood===1){ctx.fillStyle=C.heart;cell2(sandoX,dy,4,5,cp);}                                   // happy tongue
   }
