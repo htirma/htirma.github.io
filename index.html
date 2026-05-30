@@ -59,6 +59,7 @@
       --ink-400: #8E8E93;
       --ink-100: #F2F2F4;
       --salt-bone-diluted: #F4EEDF;
+      --ambient-color: var(--ink-800);
 
       --bg: var(--salt-bone-diluted);
       --text-primary: var(--ink-800);
@@ -77,6 +78,7 @@
         --text-primary: var(--ink-100);
         --text-secondary: var(--ink-400);
         --text-tertiary: var(--ink-500);
+        --ambient-color: var(--salt-bone-diluted);
       }
     }
 
@@ -85,7 +87,7 @@
     body {
       min-height: 100dvh;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: flex-start;
       background: var(--bg);
       text-align: left;
       color: var(--text-primary);
@@ -93,13 +95,19 @@
       font-size: 15px; line-height: 22px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      padding: 7vh 22px 4vh;
+      padding: 8vh 24px 4vh;
       animation: fade 220ms var(--ease);
     }
     @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { body { animation: none; } }
 
-    main { width: 100%; max-width: 640px; text-align: left; }
+    main { width: 100%; max-width: 640px; text-align: left; position: relative; z-index: 1; }
+
+    /* Ambient canal scene — JS carves the content column out as a safe zone */
+    #scene {
+      position: fixed; inset: 0;
+      z-index: 0; pointer-events: none;
+    }
 
     a {
       color: inherit; text-decoration: underline;
@@ -266,6 +274,9 @@
   </script>
 </head>
 <body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <script src="scene.js" defer></script>
+
   <main>
     <img class="avatar" src="images/amrith.webp" width="72" height="72" alt="Amrith with Sando, his shiba" />
 
