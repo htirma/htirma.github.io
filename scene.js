@@ -54,11 +54,11 @@
   // Stationary "vibing" pair, front-facing (mobile, bottom-right).
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
-    "...HHHHH...","..HHHHHHH..",".HHHHHHHHH.","HHHHHHHHHHH",
-    "HKKKKKKKKKH","HKGGGKGGGKH","HKKnKKKnKKH","HKGGGKGGGKH",
-    "HKKKKKKKKKH",".KKKnKnKKK.","...KKnKK...","...KKKKK...",
-    ".JJJJJJJJJ.",".JLJJJJJLJ.",".JLJJJJJLJ.",".KLJJJJJLK.",
-    ".JJJJJJJJJ.","..PP...PP..","..SS...SS.."
+    "....HHHHH....","...HHHHHHH...","..HHHHHHHHH..",".HHHHHHHHHHH.",
+    "HHHHHHHHHHHHH","HHKKKKKKKKKHH","HHGwwGKGwwGHH","HHGwnGKGnwGHH",
+    "HHKKKKKKKKKHH",".KKKKKKKKKKK.","...KKpppKK...","....KKKKK....",
+    ".JJJJJJJJJJJ.",".JLJJJJJJJLJ.",".JLJJJJJJJLJ.",".KLJJJJJJJLK.",
+    ".JJJJJJJJJJJ.","..PPP...PPP..","..SSS...SSS.."
   ];
   var D_SIT = [
     "..O...O..",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
@@ -82,6 +82,8 @@
       G:"rgba(20,20,24,0.96)",
       J:d?"rgba(78,82,90,0.92)":"rgba(56,60,68,0.92)",
       L:d?"rgba(52,56,64,0.95)":"rgba(38,42,50,0.95)",
+      w:"rgba(232,232,236,0.96)",
+      p:d?"rgba(184,114,106,0.92)":"rgba(160,94,88,0.95)",
       P:d?"rgba(62,66,74,0.92)":"rgba(46,50,58,0.92)",
       S:"rgba(28,28,32,0.94)",
       M:d?"rgba(112,116,126,0.95)":"rgba(92,96,106,0.95)",
