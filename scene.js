@@ -55,8 +55,8 @@
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
     "...HHHHHHH...","..HHHHHHHHH..",".HHHHHHHHHHH.","HHHHHHHHHHHHH",
-    "HHHHHHHHHHHHH","HHHKKKKKKKKKH",".KGGGGKGGGGK.",".KGwnGGGnwGK.",
-    ".KGGGGKGGGGK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
+    "HHHHHHHHHHHHH","HHHKKKKKKKKKH",".KKGGKKKGGKK.",".KGwnGGGnwGK.",
+    ".KKGGKKKGGKK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
     ".JJJJJJJJJJJ.",".JLJJJJJJJLJ.",".JLJJJJJJJLJ.",".KLJJJJJJJLK.",
     ".JJJJJJJJJJJ.","..PPP...PPP..","..SSS...SSS.."
   ];
