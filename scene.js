@@ -244,10 +244,10 @@
     var ground=isMobile?(H-12):promY;
     var cx=isMobile?(W-16-pairW):Math.round(W/2-pairW/2);
     var seatY=ground-2*cp;
-    drawBench(cx-cp,seatY,pairW+2*cp,ground);
+    if(!isMobile)drawBench(cx-cp,seatY,pairW+2*cp,ground);   // bench on desktop only
     var bobA=Math.round(Math.sin(t*0.0016)*2), bobD=Math.round(Math.sin(t*0.0016+1.7)*2);
     var sandoX=cx, amrithX=cx+dw*cp+gap;
-    var dy=seatY-dh*cp+bobD, ay=ground-ah*cp+bobA;
+    var dy=(isMobile?ground:seatY)-dh*cp+bobD, ay=ground-ah*cp+bobA;
     spr(D_SIT,sandoX,dy,cp,false);
     spr(P_SIT,amrithX,ay,cp,false);
     // expressions: blink + a slow cycle of moods
