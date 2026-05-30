@@ -51,13 +51,18 @@
   ];
   var BOAT = ["...##......","..####.....","###########",".#########."];
   var HEART = [".#.#.","#####","#####",".###.","..#.."];
-  // Stationary "vibing" pair, front-facing (mobile, bottom-right)
+  // Stationary "vibing" pair, front-facing (mobile, bottom-right).
+  // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_VIBE = [
-    "..HHHHHH..",".HHHHHHHH.","HHHHHHHHHH",".HKKKKKKH.",".HGGKKGGH.",".HKKKKKKH.",
-    "..KKKKKK..",".JJJJJJJJ.","JJJJJJJJJJ","JJJJJJJJJJ","JJJJJJJJJJ",".JJJJJJJJ.",
-    "..PPPPPP..","..PP..PP..","..SS..SS.."
+    "...MMMMMM...","..MHHHHHHM..",".MHHHHHHHHM.",".MHHHHHHHHM.",
+    "MMHHHHHHHHMM","MMHKKKKKKHMM","MMHGGKKGGHMM",".MHKKKKKKHM.",
+    "..HKKKKKKH..","...KKKKKK...",".JJJJJJJJJJ.","JJJJJJJJJJJJ",
+    "JJJJJJJJJJJJ",".JJJJJJJJJJ.","..PPP..PPP..","..SS....SS.."
   ];
-  var D_SIT = ["O......O","OO....OO",".OOOOOO.",".OnOOnO.",".OOnnOO.",".OccccO.","OOccccOO","OOccccOO",".OO..OO."];
+  var D_SIT = [
+    "OO.....OO",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
+    ".OcccccO.","OcccccccO","OcccccccO",".OcccccO.",".OO...OO."
+  ];
 
   function pal() {
     var d = isDark();
@@ -77,6 +82,7 @@
       J:d?"rgba(78,82,90,0.92)":"rgba(56,60,68,0.92)",
       P:d?"rgba(62,66,74,0.92)":"rgba(46,50,58,0.92)",
       S:"rgba(28,28,32,0.94)",
+      M:d?"rgba(112,116,126,0.95)":"rgba(92,96,106,0.95)",
       O:d?"rgba(222,142,82,0.94)":"rgba(198,108,52,0.92)",
       c:d?"rgba(238,224,200,0.9)":"rgba(230,212,184,0.88)",
       n:"rgba(30,26,26,0.95)",
