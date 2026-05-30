@@ -54,12 +54,14 @@
   // Stationary "vibing" pair, front-facing (mobile, bottom-right).
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
-    "....HHHHH....","...HHHHHHH...","..HHHHHHHHH..",".HHHHHHHHHHH.",
-    "HHHHHHHHHHHHH","HHKKKKKKKKKHH","HHGwwGKGwwGHH","HHGwnGKGnwGHH",
-    "HHKKKKKKKKKHH",".KKKKKKKKKKK.","...KKpppKK...","....KKKKK....",
+    "...HHHHH.....","..HHHHHHH....",".HHHHHHHHH...",".HHHHHHHHHHH.",
+    "HHHHHHHHHHHHH","HKKKKKKKKKKKH",".KGwwGKGwwGK.",".KGwnGKGnwGK.",
+    ".KKKKKKKKKKK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
     ".JJJJJJJJJJJ.",".JLJJJJJJJLJ.",".JLJJJJJJJLJ.",".KLJJJJJJJLK.",
     ".JJJJJJJJJJJ.","..PPP...PPP..","..SSS...SSS.."
   ];
+  // Standing pose for mobile (no bench): legs together instead of hanging
+  var P_STAND = P_SIT.slice(0,17).concat(["....PP.PP....","....SS.SS...."]);
   var D_SIT = [
     "..O...O..",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
     ".OcccccO.","OcccccccO","OcccccccO",".OcccccO.",".OO...OO."
@@ -242,7 +244,8 @@
     ctx.fillRect(x+w-P*3,seatY+P*2,P,ground-(seatY+P*2));  // right leg
   }
   function drawChill(t){
-    var cp=CP+1, aw=P_SIT[0].length, ah=P_SIT.length, dw=D_SIT[0].length, dh=D_SIT.length;
+    var PB=isMobile?P_STAND:P_SIT;
+    var cp=CP+1, aw=PB[0].length, ah=PB.length, dw=D_SIT[0].length, dh=D_SIT.length;
     var gap=2*cp, pairW=dw*cp+gap+aw*cp;
     var ground=isMobile?(H-12):promY;
     var cx=isMobile?(W-16-pairW):Math.round(W/2-pairW/2);
@@ -252,7 +255,7 @@
     var sandoX=cx, amrithX=cx+dw*cp+gap;
     var dy=(isMobile?ground:seatY)-dh*cp+bobD, ay=ground-ah*cp+bobA;
     spr(D_SIT,sandoX,dy,cp,false);
-    spr(P_SIT,amrithX,ay,cp,false);
+    spr(PB,amrithX,ay,cp,false);
     // expressions: blink + a slow cycle of moods
     // Amrith stays calm (face baked in). Sando keeps a little life: blink + happy tongue.
     var dblink=Math.sin(t*0.0011+2)>0.965, mood=Math.floor(t/3200)%3;
