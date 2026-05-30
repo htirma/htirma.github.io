@@ -78,7 +78,7 @@
     };
   }
 
-  var W=0,H=0,dpr=1,PIXEL=4,CP=5,cellsX=0,cellsY=0,isMobile=false,C=pal();
+  var W=0,H=0,dpr=1,PIXEL=4,CP=5,treePix=6,cellsX=0,cellsY=0,isMobile=false,C=pal();
   var byColor=[],lit=[],boats=[],trees=[],colTop=[],colCol=[];
   var waterTopRow=0,waterBotRow=0,feetY=0,promY=0,safeL=-1,safeR=-1,GUT=20;
   var SHOW_WALKER=false; // Amrith + Sando — flip to true once the sprites are perfected
@@ -145,7 +145,7 @@
   function resize(){
     dpr=Math.min(window.devicePixelRatio||1,2);
     W=window.innerWidth;H=window.innerHeight;isMobile=W<=540;
-    PIXEL=isMobile?3:4;CP=isMobile?4:5;
+    PIXEL=isMobile?3:4;CP=isMobile?4:5;treePix=isMobile?5:7;
     canvas.width=Math.floor(W*dpr);canvas.height=Math.floor(H*dpr);
     canvas.style.width=W+"px";canvas.style.height=H+"px";
     ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -198,7 +198,7 @@
       for(wr=waterTopRow;wr<=waterBotRow;wr++)for(cx=0;cx<cellsX;cx++){if(inSafe(cx))continue;if(Math.sin(cx*0.22+ph+wr*0.7)>0.82)cell(cx,wr);}
       for(i=0;i<boats.length;i++){var bb=boats[i],yy=bb.y+Math.round(Math.sin(t*0.0014+bb.ph)*PIXEL);sprC(BOAT,bb.x,yy,PIXEL,C.boat);}
       ctx.fillStyle=C.quay;ctx.fillRect(0,promY,W,Math.max(2,PIXEL-1));
-      for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*PIXEL,promY-tm.length*PIXEL,PIXEL,false);}
+      for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*treePix,promY-tm.length*treePix,treePix,false);}
     }
   }
 
@@ -228,7 +228,7 @@
   var seq=[38,38,40,40,37,39,37,39,66,65],pos=0;
   window.addEventListener("keydown",function(e){pos=(e.keyCode===seq[pos])?pos+1:0;if(pos===seq.length){pos=0;var el=document.documentElement;el.style.transition="filter .15s ease";el.style.filter="invert(1) hue-rotate(180deg)";setTimeout(function(){el.style.filter="";},900);}});
 
-  try{console.log("%c@amrith %c· building for the love of the game\n  psst — click the photo to pet Sando 🐕\n  built by hand, no frameworks. say hi: hi@amrith.co","font-weight:bold","color:#8E8E93");}catch(e){}
+  try{console.log("%c@amrith %c· building for the love of the game\n  built by hand, no frameworks. say hi: hi@amrith.co","font-weight:bold","color:#8E8E93");}catch(e){}
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
 })();
