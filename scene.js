@@ -16,6 +16,7 @@
   var main = document.querySelector("main");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var rand = Math.random;
+  function isDark(){var t=document.documentElement.getAttribute("data-theme");return t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;}
 
   // ── Amrith (side profile, facing right). H hair K skin G glasses J jacket P pants S shoe ──
   var P_STAND = [
@@ -52,7 +53,7 @@
   var HEART = [".#.#.","#####","#####",".###.","..#.."];
 
   function pal() {
-    var d = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var d = isDark();
     var houses = d
       ? [[176,96,86],[150,112,86],[150,118,96],[108,118,150],[168,128,96],[120,108,96]]
       : [[150,70,55],[120,82,58],[122,86,62],[72,82,110],[140,100,68],[96,86,76]];
@@ -221,6 +222,7 @@
   var rt;
   window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(start,150);});
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){C=pal();build(layout());});
+  try{new MutationObserver(function(){C=pal();build(layout());}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});}catch(e){}
 
   var avatar=document.querySelector(".avatar");
   if(avatar&&SHOW_WALKER){avatar.style.cursor="pointer";avatar.addEventListener("click",function(){A.pet=1.8;A.petT=1.8;if(reduceMotion){var t0=performance.now();var tick=function(tt){var dt=Math.min(0.05,(tt-t0)/1000);t0=tt;update(dt);ctx.clearRect(0,0,W,H);drawScene(tt);drawPair(tt);if(A.pet>0)requestAnimationFrame(tick);else{drawScene(1500);drawPair(1500);}};requestAnimationFrame(tick);}});}

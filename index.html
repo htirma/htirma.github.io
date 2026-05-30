@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
   <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4SKBR3XDN7"></script>
@@ -72,8 +73,15 @@
       --font-mono: "Departure Mono", ui-monospace, "SF Mono", Menlo, monospace;
       --ease: cubic-bezier(0.32, 0.72, 0.0, 1.0);
     }
+    :root[data-theme="dark"] {
+      --bg: var(--ink-800);
+      --text-primary: var(--ink-100);
+      --text-secondary: var(--ink-400);
+      --text-tertiary: var(--ink-500);
+      --ambient-color: var(--salt-bone-diluted);
+    }
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
         --bg: var(--ink-800);
         --text-primary: var(--ink-100);
         --text-secondary: var(--ink-400);
@@ -81,6 +89,17 @@
         --ambient-color: var(--salt-bone-diluted);
       }
     }
+
+    .theme-toggle {
+      position: fixed; top: 16px; right: 18px; z-index: 3;
+      background: none; border: 0; cursor: pointer;
+      font-family: var(--font-mono); font-size: 15px; line-height: 1;
+      color: var(--text-tertiary); padding: 8px; opacity: .75;
+      transition: color .2s var(--ease), opacity .2s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .theme-toggle:hover { color: var(--text-primary); opacity: 1; }
+    .theme-toggle:focus-visible { outline: 1px solid var(--text-tertiary); outline-offset: 4px; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
@@ -274,6 +293,18 @@
   </script>
 </head>
 <body>
+  <button id="theme" class="theme-toggle" type="button" aria-label="Toggle light or dark theme">☾</button>
+  <script>
+    (function(){
+      var btn=document.getElementById("theme");
+      function eff(){var t=document.documentElement.getAttribute("data-theme");return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");}
+      function paint(){btn.textContent=eff()==="dark"?"☀":"☾";}
+      paint();
+      btn.addEventListener("click",function(){var n=eff()==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("theme",n);}catch(e){}paint();});
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change",paint);
+    })();
+  </script>
+
   <canvas id="scene" aria-hidden="true"></canvas>
   <script src="scene.js" defer></script>
 
