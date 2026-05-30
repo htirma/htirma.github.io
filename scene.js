@@ -111,6 +111,7 @@
   var A={x:0,dir:1,speed:50,target:50,timer:1.5,mode:"walk",leg:0,pet:0,petT:1,peeTree:null};
   var Dg={x:0,dir:1,leg:0,pose:"walk"};
   var contentTopY=0,sunX=0,sunY=0,sunR=22,skyBot=0;
+  var hearts=[], amrithBox=null, sandoBox=null;
   var WX={code:0,clouds:1,precip:"none"},clouds=[],drops=[],stars=[],weatherFetched=false;
 
   function srng(s){return function(){s|=0;s=(s+0x6D2B79F5)|0;var t=Math.imul(s^(s>>>15),1|s);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
@@ -255,6 +256,9 @@
     var ay=(isMobile?ground-ah*cp:seatY-16*cp)+bobA;         // sit (butt on seat) vs stand
     spr(D_SIT,sandoX,dy,cp,false);
     spr(PB,amrithX,ay,cp,false);
+    // remember on-canvas boxes for click hit-testing + heart spawns
+    amrithBox={x:amrithX,y:ay,w:aw*cp,h:ah*cp};
+    sandoBox={x:sandoX,y:dy,w:dw*cp,h:dh*cp};
     // expressions: blink + a slow cycle of moods
     // Amrith stays calm (face baked in). Sando keeps a little life: blink + happy tongue.
     var dblink=Math.sin(t*0.0011+2)>0.965, mood=Math.floor(t/3200)%3;
@@ -308,7 +312,16 @@
   function fetchWeather(){try{fetch("https://api.open-meteo.com/v1/forecast?latitude=52.3676&longitude=4.9041&current=weather_code").then(function(r){return r.json();}).then(function(j){var code=(j&&j.current&&j.current.weather_code)|0;WX.code=code;mapWeather(code);buildSky();}).catch(function(){});}catch(e){}}
 
   var last=0,raf=0;
-  function frame(t){var dt=last?Math.min(0.05,(t-last)/1000):0.016;last=t;updateSky(dt);ctx.clearRect(0,0,W,H);drawSky(t);drawScene(t);drawChill(t);raf=requestAnimationFrame(frame);}
+  // ── Floating hearts (pet reaction) ──────────────────────────────
+  function burstHearts(box){
+    if(!box)return;
+    var n=5+Math.floor(rand()*3), cx=box.x+box.w/2;
+    for(var i=0;i<n;i++)hearts.push({x:cx+(rand()-0.5)*box.w*0.7,y:box.y+rand()*box.h*0.4,vy:24+rand()*18,vx:(rand()-0.5)*18,life:0,ttl:1.1+rand()*0.6,s:Math.max(2,(CP)-1+Math.floor(rand()*2))});
+  }
+  function updateHearts(dt){for(var i=hearts.length-1;i>=0;i--){var h=hearts[i];h.life+=dt;h.y-=h.vy*dt;h.x+=h.vx*dt;h.vx*=0.96;if(h.life>=h.ttl)hearts.splice(i,1);}}
+  function drawHearts(){for(var i=0;i<hearts.length;i++){var h=hearts[i],k=h.life/h.ttl,a=k<0.2?(k/0.2):(1-(k-0.2)/0.8);ctx.globalAlpha=Math.max(0,a);sprC(HEART,Math.round(h.x-2.5*h.s),Math.round(h.y),h.s,C.heart);}ctx.globalAlpha=1;}
+
+  function frame(t){var dt=last?Math.min(0.05,(t-last)/1000):0.016;last=t;updateSky(dt);updateHearts(dt);ctx.clearRect(0,0,W,H);drawSky(t);drawScene(t);drawChill(t);drawHearts();raf=requestAnimationFrame(frame);}
   function start(){resize();last=0;if(reduceMotion){ctx.clearRect(0,0,W,H);drawSky(1500);drawScene(1500);drawChill(1500);return;}cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);}
 
   var rt;
@@ -316,8 +329,17 @@
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){C=pal();build(layout());});
   try{new MutationObserver(function(){C=pal();build(layout());}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});}catch(e){}
 
+  // Click the avatar photo → hearts from on-canvas Amrith.
   var avatar=document.querySelector(".avatar");
-  if(avatar&&SHOW_WALKER){avatar.style.cursor="pointer";avatar.addEventListener("click",function(){A.pet=1.8;A.petT=1.8;if(reduceMotion){var t0=performance.now();var tick=function(tt){var dt=Math.min(0.05,(tt-t0)/1000);t0=tt;update(dt);ctx.clearRect(0,0,W,H);drawScene(tt);drawPair(tt);if(A.pet>0)requestAnimationFrame(tick);else{drawScene(1500);drawPair(1500);}};requestAnimationFrame(tick);}});}
+  if(avatar){avatar.style.cursor="pointer";avatar.addEventListener("click",function(){burstHearts(amrithBox);});}
+  // Click Sando (or Amrith) on the canvas → hearts. Canvas ignores pointer events,
+  // so test the click coordinates against the boxes from a window listener.
+  function hit(box,x,y){return box&&x>=box.x&&x<=box.x+box.w&&y>=box.y-box.h*0.3&&y<=box.y+box.h;}
+  window.addEventListener("click",function(e){
+    var x=e.clientX,y=e.clientY;
+    if(hit(sandoBox,x,y))burstHearts(sandoBox);
+    else if(hit(amrithBox,x,y))burstHearts(amrithBox);
+  });
 
   var seq=[38,38,40,40,37,39,37,39,66,65],pos=0;
   window.addEventListener("keydown",function(e){pos=(e.keyCode===seq[pos])?pos+1:0;if(pos===seq.length){pos=0;var el=document.documentElement;el.style.transition="filter .15s ease";el.style.filter="invert(1) hue-rotate(180deg)";setTimeout(function(){el.style.filter="";},900);}});
