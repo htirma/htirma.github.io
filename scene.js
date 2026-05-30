@@ -54,8 +54,8 @@
   // Stationary "vibing" pair, front-facing (mobile, bottom-right).
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
-    "..HHHHHH.....",".HHHHHHHH....","HHHHHHHHHH...","HHHHHHHHHHHH.",
-    "HHHHHHHHHHHHH","HHHHHHKKKKKKH",".KGwwGKGwwGK.",".KGwnGKGnwGK.",
+    "...HHHHHHH...","..HHHHHHHHH..",".HHHHHHHHHHH.","HHHHHHHHHHHHH",
+    "HHHHHHHHHHHHH","HHHKKKKKKKKKH",".KGwwGKGwwGK.",".KGwnGKGnwGK.",
     ".KKKKKKKKKKK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
     ".JJJJJJJJJJJ.",".JLJJJJJJJLJ.",".JLJJJJJJJLJ.",".KLJJJJJJJLK.",
     ".JJJJJJJJJJJ.","..PPP...PPP..","..SSS...SSS.."
