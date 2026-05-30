@@ -55,10 +55,10 @@
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
     "...HHHHH...","..HHHHHHH..",".HHHHHHHHH.","HHHHHHHHHHH",
-    "HKKKKKKKKKH","HKGGGKGGGKH","HKGnGGGnGKH","HKKKKKKKKKH",
-    "HKKKKKKKKKH",".KKKKKKKKK.","...KKKKK...","...KKKKK...",
-    ".JJJJJJJJJ.",".JJ.JJJ.JJ.",".JJ.JJJ.JJ.",".KK.JJJ.KK.",
-    "...JJJJJ...","..PP...PP..","..SS...SS.."
+    "HKKKKKKKKKH","HKGGGKGGGKH","HKKnKKKnKKH","HKGGGKGGGKH",
+    "HKKKKKKKKKH",".KKKnKnKKK.","...KKnKK...","...KKKKK...",
+    ".JJJJJJJJJ.",".JLJJJJJLJ.",".JLJJJJJLJ.",".KLJJJJJLK.",
+    ".JJJJJJJJJ.","..PP...PP..","..SS...SS.."
   ];
   var D_SIT = [
     "..O...O..",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
@@ -81,6 +81,7 @@
       K:d?"rgba(200,150,112,0.94)":"rgba(186,134,96,0.94)",
       G:"rgba(20,20,24,0.96)",
       J:d?"rgba(78,82,90,0.92)":"rgba(56,60,68,0.92)",
+      L:d?"rgba(52,56,64,0.95)":"rgba(38,42,50,0.95)",
       P:d?"rgba(62,66,74,0.92)":"rgba(46,50,58,0.92)",
       S:"rgba(28,28,32,0.94)",
       M:d?"rgba(112,116,126,0.95)":"rgba(92,96,106,0.95)",
@@ -251,14 +252,10 @@
     spr(D_SIT,sandoX,dy,cp,false);
     spr(P_SIT,amrithX,ay,cp,false);
     // expressions: blink + a slow cycle of moods
-    var blink=Math.sin(t*0.0009)>0.965, dblink=Math.sin(t*0.0011+2)>0.965, mood=Math.floor(t/3200)%3;
-    if(blink){ctx.fillStyle=C.K;cell2(amrithX,ay,3,6,cp);cell2(amrithX,ay,7,6,cp);}
-    ctx.fillStyle=C.n;
-    if(mood===1){cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,6,9,cp);cell2(amrithX,ay,5,10,cp);}     // smile ‿
-    else if(mood===2){cell2(amrithX,ay,5,9,cp);}                                                    // small "o"
-    else{cell2(amrithX,ay,4,9,cp);cell2(amrithX,ay,5,9,cp);}                                        // neutral line
+    // Amrith stays calm (face baked in). Sando keeps a little life: blink + happy tongue.
+    var dblink=Math.sin(t*0.0011+2)>0.965, mood=Math.floor(t/3200)%3;
     if(dblink){ctx.fillStyle=C.O;cell2(sandoX,dy,2,3,cp);cell2(sandoX,dy,6,3,cp);}
-    if(mood===1){ctx.fillStyle=C.heart;cell2(sandoX,dy,4,5,cp);}                                   // happy tongue
+    if(mood===1){ctx.fillStyle=C.heart;cell2(sandoX,dy,4,5,cp);}                                   // Sando happy tongue
   }
 
   function drawPair(t){
