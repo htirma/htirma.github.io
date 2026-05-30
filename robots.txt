@@ -1,0 +1,6 @@
+# https://amrith.co
+# Everyone welcome, including AI crawlers and answer engines.
+User-agent: *
+Allow: /
+
+Sitemap: https://amrith.co/sitemap.xml

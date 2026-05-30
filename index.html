@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Amrith Shanbhag</title>
+  <meta name="description" content="I spent a decade growing communities for consumer startups including Product Hunt. Now I build my own products." />
+  <meta name="author" content="Amrith Shanbhag" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <link rel="canonical" href="https://amrith.co/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Amrith Shanbhag" />
+  <meta property="og:title" content="Amrith Shanbhag" />
+  <meta property="og:description" content="I spent a decade growing communities for consumer startups including Product Hunt. Now I build my own products." />
+  <meta property="og:url" content="https://amrith.co/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://amrith.co/images/icon-512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="Amrith with Sando, his shiba" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@amrith" />
+  <meta name="twitter:creator" content="@amrith" />
+  <meta name="twitter:title" content="Amrith Shanbhag" />
+  <meta name="twitter:description" content="I spent a decade growing communities for consumer startups including Product Hunt. Now I build my own products." />
+  <meta name="twitter:image" content="https://amrith.co/images/icon-512.png" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#F4EEDF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0E0E10" media="(prefers-color-scheme: dark)" />
+
+  <style>
+    @font-face {
+      font-family: "Departure Mono";
+      src: local("Departure Mono"), local("DepartureMono-Regular"),
+           url("fonts/DepartureMono-Regular.woff2") format("woff2"),
+           url("fonts/DepartureMono-Regular.woff") format("woff");
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+
+    :root {
+      --ink-800: #0E0E10;
+      --ink-500: #636368;
+      --ink-400: #8E8E93;
+      --ink-100: #F2F2F4;
+      --salt-bone-diluted: #F4EEDF;
+
+      --bg: var(--salt-bone-diluted);
+      --text-primary: var(--ink-800);
+      --text-secondary: var(--ink-500);
+      --text-tertiary: var(--ink-400);
+      --hair: color-mix(in srgb, var(--text-primary) 14%, transparent);
+
+      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      --font-mono: "Departure Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      --ease: cubic-bezier(0.32, 0.72, 0.0, 1.0);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: var(--ink-800);
+        --text-primary: var(--ink-100);
+        --text-secondary: var(--ink-400);
+        --text-tertiary: var(--ink-500);
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      min-height: 100dvh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: var(--bg);
+      text-align: left;
+      color: var(--text-primary);
+      font-family: var(--font-text);
+      font-size: 15px; line-height: 22px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 7vh 22px 4vh;
+      animation: fade 220ms var(--ease);
+    }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { body { animation: none; } }
+
+    main { width: 100%; max-width: 640px; text-align: left; }
+
+    a {
+      color: inherit; text-decoration: underline;
+      text-decoration-thickness: 1px; text-underline-offset: 3px;
+      text-decoration-color: color-mix(in srgb, currentColor 32%, transparent);
+      transition: text-decoration-color 150ms var(--ease);
+    }
+    a:hover { text-decoration-color: currentColor; }
+
+    /* ── Wordmark ── */
+    .avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      object-fit: cover; display: block;
+      border: 1px solid var(--hair);
+      margin-bottom: 20px;
+    }
+
+    .wordmark {
+      font-family: var(--font-mono);
+      font-size: 24px; line-height: 1; letter-spacing: 0.02em;
+      display: inline-flex; align-items: baseline; gap: 0.1em;
+      margin-bottom: 32px;
+    }
+    .wordmark .cursor {
+      display: inline-block; width: 0.36em; height: 0.92em;
+      background: currentColor; transform: translateY(0.08em);
+      animation: blink 1.2s steps(2, end) infinite;
+    }
+    @keyframes blink { to { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .wordmark .cursor { animation: none; opacity: 0.6; } }
+
+    /* ── Statement ── */
+    h1 {
+      font-family: var(--font-display);
+      font-size: 27px; line-height: 33px; font-weight: 600;
+      letter-spacing: -0.02em; text-wrap: balance;
+      margin-bottom: 40px;
+    }
+
+    /* ── Roster blocks ── */
+    .block { margin-bottom: 28px; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-tertiary);
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .eyebrow::after {
+      content: ""; flex: 1; height: 1px; background: var(--hair);
+    }
+    .roster {
+      list-style: none; display: flex; flex-wrap: wrap;
+      justify-content: flex-start; gap: 4px 12px;
+    }
+    .roster li { white-space: nowrap; }
+    .roster .sep { color: var(--hair); }
+
+    .block--now .roster { font-size: 16px; }
+    .block--now .note {
+      display: block; color: var(--text-tertiary);
+      font-size: 13px; margin-top: 10px;
+    }
+    .block--before .roster { font-size: 13px; color: var(--text-tertiary); }
+
+    /* ── Offer ── */
+    .offer {
+      color: var(--text-secondary);
+      max-width: 44ch; margin: 0 0 36px;
+      padding-top: 32px; margin-top: 4px; border-top: 1px solid var(--hair);
+      text-wrap: pretty;
+    }
+    .offer p + p { margin-top: 12px; }
+    .offer .bridge { color: var(--text-primary); }
+    .offer .aside {
+      margin-top: 7px;
+      font-size: 13px; line-height: 20px;
+      color: var(--text-tertiary);
+    }
+    .offer .talk {
+      color: inherit;
+      text-decoration: none;
+    }
+    .offer .talk:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      text-decoration-color: currentColor;
+    }
+
+    /* ── Footer ── */
+    footer {
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      display: flex; flex-wrap: wrap; justify-content: flex-start;
+      align-items: center; gap: 8px 14px;
+    }
+    footer a { text-decoration-color: var(--hair); }
+
+    /* ── Mobile ── */
+    @media (max-width: 540px) {
+      body {
+        justify-content: flex-start;
+        padding: max(7vh, env(safe-area-inset-top, 0)) 20px max(5vh, env(safe-area-inset-bottom, 0));
+      }
+      .wordmark { font-size: 22px; margin-bottom: 28px; }
+      h1 { font-size: 24px; line-height: 30px; margin-bottom: 34px; }
+      .block { margin-bottom: 26px; }
+      .offer { max-width: none; }
+      footer { gap: 10px 16px; }
+    }
+    @media (max-width: 360px) {
+      h1 { font-size: 22px; line-height: 28px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Amrith Shanbhag",
+    "givenName": "Amrith",
+    "familyName": "Shanbhag",
+    "alternateName": "@amrith",
+    "url": "https://amrith.co/",
+    "image": "https://amrith.co/images/icon-512.png",
+    "email": "hi@amrith.co",
+    "jobTitle": "Builder",
+    "description": "Amrith spent a decade growing communities for consumer startups including Product Hunt. Now he builds his own products.",
+    "knowsAbout": [
+      "Community building",
+      "Organic growth",
+      "Product-led growth",
+      "App Store Optimization",
+      "Search engine optimization",
+      "Brand",
+      "Go-to-market",
+      "Consumer products"
+    ],
+    "sameAs": [
+      "https://x.com/amrith",
+      "https://twitter.com/amrith",
+      "https://github.com/htirma",
+      "https://www.linkedin.com/in/amriths",
+      "https://producthunt.com/@amrith"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <main>
+    <img class="avatar" src="images/amrith.webp" width="72" height="72" alt="Amrith with Sando, his shiba" />
+
+    <div class="wordmark" aria-label="@amrith">@amrith<span class="cursor" aria-hidden="true"></span></div>
+
+    <h1>A decade growing communities for startups.<br />Now I build ideas my younger self would love.</h1>
+
+    <div class="block block--now">
+      <p class="eyebrow">exploring</p>
+      <ul class="roster">
+        <li><a href="https://timebase.me/?ref=amrith" target="_blank" rel="noopener">Timebase</a></li><li class="sep">&middot;</li>
+        <li><a href="https://shio.sh/?ref=amrith" target="_blank" rel="noopener">Shio</a></li><li class="sep">&middot;</li>
+        <li><a href="https://dhuni.net/?ref=amrith" target="_blank" rel="noopener">Dhuni</a></li><li class="sep">&middot;</li>
+        <li><a href="https://stem.md/?ref=amrith" target="_blank" rel="noopener">Stem</a></li><li class="sep">&middot;</li>
+        <li><a href="https://medivalent.com/?ref=amrith" target="_blank" rel="noopener">Medivalent</a></li>
+      </ul>
+      <span class="note">&amp; <a href="https://samooh.com/?ref=amrith" target="_blank" rel="noopener">Samooh</a>, a community for Indian-origin founders building global products.</span>
+    </div>
+
+    <div class="block block--before">
+      <p class="eyebrow">past lives</p>
+      <ul class="roster">
+        <li><a href="https://feathrd.co/?ref=amrith" target="_blank" rel="noopener">Feathrd</a></li><li class="sep">&middot;</li>
+        <li><a href="https://producthunt.com/@amrith?ref=amrith" target="_blank" rel="noopener">Product Hunt</a></li><li class="sep">&middot;</li>
+        <li><a href="https://opalapp.com/?ref=amrith" target="_blank" rel="noopener">Opal</a></li><li class="sep">&middot;</li>
+        <li><a href="https://getstoic.com/?ref=amrith" target="_blank" rel="noopener">Stoic</a></li><li class="sep">&middot;</li>
+        <li><a href="https://letsenvision.com/?ref=amrith" target="_blank" rel="noopener">Envision</a></li><li class="sep">&middot;</li>
+        <li>and others</li>
+      </ul>
+    </div>
+
+    <div class="offer">
+      <p>Building something in consumer? I&rsquo;m always happy to <a class="talk" href="mailto:hi@amrith.co">talk</a>.</p>
+      <p class="bridge">Being the bridge between the team and the people they build for, getting them to care about what we create, is what I do best.</p>
+      <p class="aside">Plus, the <a href="https://sandoinu.com" target="_blank" rel="noopener">shiba</a> (and energy) I bring to the table is a big bonus.</p>
+    </div>
+
+    <footer>
+      <a href="https://twitter.com/amrith" target="_blank" rel="noopener">twitter</a>
+      <a href="https://github.com/htirma" target="_blank" rel="noopener">github</a>
+      <a href="https://linkedin.com/in/amriths" target="_blank" rel="noopener">linkedin</a>
+    </footer>
+  </main>
+</body>
+</html>
