@@ -90,16 +90,16 @@
       }
     }
 
+    /* Transparent hit-area over the canvas sun/moon (positioned by scene.js) */
     .theme-toggle {
       position: fixed; top: 18px; right: 20px; z-index: 3;
-      background: none; border: 0; cursor: pointer;
-      font-family: var(--font-mono); font-size: 24px; line-height: 1;
-      color: var(--text-secondary); padding: 6px; opacity: .9;
-      transition: color .2s var(--ease), opacity .2s var(--ease), transform .15s var(--ease);
-      -webkit-tap-highlight-color: transparent;
+      width: 56px; height: 56px; padding: 0;
+      background: none; border: 0; border-radius: 50%;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: box-shadow .2s var(--ease);
     }
-    .theme-toggle:hover { color: var(--text-primary); opacity: 1; transform: rotate(20deg); }
-    .theme-toggle:focus-visible { outline: 1px solid var(--text-tertiary); outline-offset: 4px; }
+    .theme-toggle:hover { box-shadow: 0 0 0 1px var(--hair) inset; }
+    .theme-toggle:focus-visible { outline: 1px solid var(--text-tertiary); outline-offset: 3px; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
@@ -293,17 +293,14 @@
   </script>
 </head>
 <body>
-  <button id="theme" class="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme (press t)">☾</button>
+  <button id="theme" class="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme (sun/moon, or press t)"></button>
   <script>
     (function(){
       var btn=document.getElementById("theme");
       function eff(){var t=document.documentElement.getAttribute("data-theme");return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");}
-      function paint(){btn.textContent=eff()==="dark"?"☀":"☾";}
-      function toggle(){var n=eff()==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("theme",n);}catch(e){}paint();}
-      paint();
+      function toggle(){var n=eff()==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("theme",n);}catch(e){}}
       btn.addEventListener("click",toggle);
       document.addEventListener("keydown",function(e){if((e.key==="t"||e.key==="T")&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&!e.shiftKey)toggle();});
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change",paint);
     })();
   </script>
 
