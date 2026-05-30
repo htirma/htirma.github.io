@@ -55,8 +55,8 @@
   // Amrith with headphones (M) + glasses; Sando sitting like a good shiba.
   var P_SIT = [
     "...HHHHHHH...","..HHHHHHHHH..",".HHHHHHHHHHH.","HHHHHHHHHHHHH",
-    "HHHHHHHHHHHHH","HHHKKKKKKKKKH",".KGwwGKGwwGK.",".KGwnGKGnwGK.",
-    ".KKKKKKKKKKK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
+    "HHHHHHHHHHHHH","HHHKKKKKKKKKH",".KGGGGKGGGGK.",".KGwnGGGnwGK.",
+    ".KGGGGKGGGGK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
     ".JJJJJJJJJJJ.",".JLJJJJJJJLJ.",".JLJJJJJJJLJ.",".KLJJJJJJJLK.",
     ".JJJJJJJJJJJ.","..PPP...PPP..","..SSS...SSS.."
   ];
@@ -234,14 +234,12 @@
     for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*treePix,promY-tm.length*treePix,treePix,false);}
   }
   function cell2(ox,oy,col,row,cp){ctx.fillRect(ox+col*cp,oy+row*cp,cp,cp);}
-  function drawBench(x,seatY,w,ground){
-    var P=PIXEL;ctx.fillStyle=C.T;
-    ctx.fillRect(x,seatY-P*4,w,P);                         // back rail
-    ctx.fillRect(x,seatY-P*4,P,P*4);                       // left post
-    ctx.fillRect(x+w-P,seatY-P*4,P,P*4);                   // right post
-    ctx.fillRect(x,seatY,w,P*2);                           // seat plank
-    ctx.fillRect(x+P*2,seatY+P*2,P,ground-(seatY+P*2));    // left leg
-    ctx.fillRect(x+w-P*3,seatY+P*2,P,ground-(seatY+P*2));  // right leg
+  function drawBench(x,seatY,w,ground,cp){
+    ctx.fillStyle=C.T;
+    var pt=Math.max(2,Math.round(cp*1.4));
+    ctx.fillRect(x,seatY,w,pt);                              // seat plank
+    ctx.fillRect(x+cp*2,seatY+pt,cp,ground-(seatY+pt));      // left leg
+    ctx.fillRect(x+w-cp*3,seatY+pt,cp,ground-(seatY+pt));    // right leg
   }
   function drawChill(t){
     var PB=isMobile?P_STAND:P_SIT;
@@ -249,11 +247,12 @@
     var gap=2*cp, pairW=dw*cp+gap+aw*cp;
     var ground=isMobile?(H-12):promY;
     var cx=isMobile?(W-16-pairW):Math.round(W/2-pairW/2);
-    var seatY=ground-2*cp;
-    if(!isMobile)drawBench(cx-cp,seatY,pairW+2*cp,ground);   // bench on desktop only
+    var seatY=ground-5*cp;                                    // raised bench seat (desktop)
+    if(!isMobile)drawBench(cx-cp,seatY,pairW+2*cp,ground,cp); // backless bench, behind the pair
     var bobA=Math.round(Math.sin(t*0.0016)*2), bobD=Math.round(Math.sin(t*0.0016+1.7)*2);
     var sandoX=cx, amrithX=cx+dw*cp+gap;
-    var dy=(isMobile?ground:seatY)-dh*cp+bobD, ay=ground-ah*cp+bobA;
+    var dy=(isMobile?ground:seatY)-dh*cp+bobD;
+    var ay=(isMobile?ground-ah*cp:seatY-16*cp)+bobA;         // sit (butt on seat) vs stand
     spr(D_SIT,sandoX,dy,cp,false);
     spr(PB,amrithX,ay,cp,false);
     // expressions: blink + a slow cycle of moods
