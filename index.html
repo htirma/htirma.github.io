@@ -292,6 +292,17 @@
       font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em;
       color: var(--text-tertiary); margin-bottom: 22px;
     }
+    .blurb-figure {
+      display: block; width: 100%; margin: 0 0 24px;
+      aspect-ratio: 1200 / 630; overflow: hidden;
+      border-radius: 14px; border: 1px solid var(--hair);
+      background: var(--bg);
+    }
+    .blurb-figure img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .4s var(--ease);
+    }
+    .blurb-figure:hover img { transform: scale(1.02); }
     .blurb-body {
       color: var(--text-secondary); max-width: 52ch; margin-bottom: 28px;
       text-wrap: pretty;
@@ -445,11 +456,12 @@
           (b.tag ? '<p class="blurb-eyebrow">'+esc(b.tag)+'</p>' : '') +
           '<h2 class="blurb-title">'+esc(b.title)+'</h2>' +
           (b.years ? '<p class="blurb-years">'+esc(b.years)+'</p>' : '') +
+          '<a class="blurb-figure" href="'+b.href+'" target="_blank" rel="noopener" aria-label="Visit '+esc(b.title)+'"><img src="images/'+b.img+'.png" alt="'+esc(b.title)+'" loading="lazy" /></a>' +
           '<p class="blurb-body">'+esc(b.body)+'</p>' +
           '<a class="blurb-visit" href="'+b.href+'" target="_blank" rel="noopener">'+esc(b.link)+' →</a>' +
           '</div>';
       }
-      function open(k,push){var b=B[k];if(!b)return;render(b);openKey=k;document.body.classList.add("blurb-open");el.classList.add("open");el.setAttribute("aria-hidden","false");if(push){try{history.pushState({blurb:k},"");}catch(e){}}}
+      function open(k,push){var b=B[k];if(!b)return;b.img=k;render(b);openKey=k;document.body.classList.add("blurb-open");el.classList.add("open");el.setAttribute("aria-hidden","false");if(push){try{history.pushState({blurb:k},"");}catch(e){}}}
       function close(){openKey=null;document.body.classList.remove("blurb-open");el.classList.remove("open");el.setAttribute("aria-hidden","true");}
       function back(){if(history.state&&history.state.blurb){history.back();}else{close();}}
       document.querySelectorAll("[data-blurb]").forEach(function(a){
