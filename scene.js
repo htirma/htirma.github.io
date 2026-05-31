@@ -183,7 +183,7 @@
     if(A.x===0){A.x=W*0.35;Dg.x=A.x+44;}
     build(layout());
     sunR=isMobile?16:24; sunX=Math.round(W*(isMobile?0.86:0.85)); sunY=Math.round(H*(isMobile?0.07:0.12));
-    skyBot=waterTopRow*PIXEL-8;
+    skyBot=isMobile?(H+8):(waterTopRow*PIXEL-8);
     positionToggle();
     if(!weatherFetched){weatherFetched=true;fetchWeather();}
   }
@@ -280,10 +280,10 @@
 
   // ── Sky + weather (Amsterdam, Open-Meteo) ───────────────────────
   function inMargin(x){return x<safeL-GUT||x>safeR+GUT;}
-  function visibleSky(x,y){return y<contentTopY-6||inMargin(x);}
+  function visibleSky(x,y){return isMobile?true:(y<contentTopY-6||inMargin(x));}
   function buildSky(){
     clouds=[];drops=[];stars=[];
-    var top=H*0.03, bot=Math.max(top+20,(waterTopRow*PIXEL)-8);
+    var top=H*0.03, bot=isMobile?H:Math.max(top+20,(waterTopRow*PIXEL)-8);
     var nC=Math.min(7,WX.clouds+(WX.precip!=="none"?2:0));
     for(var i=0;i<nC;i++)clouds.push({x:rand()*W,y:top+rand()*(bot-top)*0.7,s:(isMobile?2:3)+Math.floor(rand()*3),v:5+rand()*10});
     if(WX.precip!=="none"){var n=WX.precip==="snow"?70:110;for(var d=0;d<n;d++)drops.push({x:rand()*W,y:rand()*bot,v:(WX.precip==="snow"?22:130)+rand()*(WX.precip==="snow"?22:90),dx:(rand()-0.5)*(WX.precip==="snow"?10:4)});}
