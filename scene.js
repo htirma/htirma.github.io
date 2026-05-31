@@ -332,14 +332,12 @@
   // Click the avatar photo → hearts from on-canvas Amrith.
   var avatar=document.querySelector(".avatar");
   if(avatar){avatar.style.cursor="pointer";avatar.addEventListener("click",function(){burstHearts(amrithBox);});}
-  // Click Sando (or Amrith) on the canvas → hearts. Canvas ignores pointer events,
-  // so test the click coordinates against the boxes from a window listener.
-  function hit(box,x,y){return box&&x>=box.x&&x<=box.x+box.w&&y>=box.y-box.h*0.3&&y<=box.y+box.h;}
-  window.addEventListener("click",function(e){
-    var x=e.clientX,y=e.clientY;
-    if(hit(sandoBox,x,y))burstHearts(sandoBox);
-    else if(hit(amrithBox,x,y))burstHearts(amrithBox);
-  });
+  // Tap/click Sando or Amrith on the canvas → hearts. Canvas ignores pointer
+  // events, so hit-test against the boxes from a window listener (+ touch).
+  function hit(box,x,y){if(!box)return false;var pad=14;return x>=box.x-pad&&x<=box.x+box.w+pad&&y>=box.y-box.h*0.3-pad&&y<=box.y+box.h+pad;}
+  function tap(x,y){if(hit(sandoBox,x,y)){burstHearts(sandoBox);return true;}if(hit(amrithBox,x,y)){burstHearts(amrithBox);return true;}return false;}
+  window.addEventListener("click",function(e){tap(e.clientX,e.clientY);});
+  window.addEventListener("touchend",function(e){var t=e.changedTouches&&e.changedTouches[0];if(t&&tap(t.clientX,t.clientY))e.preventDefault();},{passive:false});
 
   var seq=[38,38,40,40,37,39,37,39,66,65],pos=0;
   window.addEventListener("keydown",function(e){pos=(e.keyCode===seq[pos])?pos+1:0;if(pos===seq.length){pos=0;var el=document.documentElement;el.style.transition="filter .15s ease";el.style.filter="invert(1) hue-rotate(180deg)";setTimeout(function(){el.style.filter="";},900);}});
