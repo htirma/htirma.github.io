@@ -21,16 +21,16 @@ The source for **[amrith.co](https://amrith.co)**: a single, restrained page. Va
 
 ## Building now
 
-- **[Timebase](https://timebase.me)**: a calmer way to visualize and plan across time zones; get countdowns to events on your calendar, and plan meetings at a time that works for everyone.
-- **[Shio](https://shio.sh)**: a mobile-first terminal built for the agent era.
-- **[Dhuni](https://dhuni.net)**: a 24/7 internet radio for Indian classical, Hindustani, Carnatic, instrumental, and vintage music; a quiet listening world for deep focus, by Samooh.
-- **[Stem](https://stem.md)**: the place your curiosity is looking for. Document your rabbit holes and niche interests, and explore others'. Find trails worth following; leave trails worth finding.
-- **[Medivalent](https://medivalent.com)**: cross-border medicine equivalence; find the local equivalent of a medicine in another country.
-- **[Samooh](https://samooh.com)**: a community for Indian-origin founders building global products.
+- **[Timebase](https://timebase.me)**: timezones made simple. A calmer way to visualize and plan across time zones.
+- **[Shio](https://shio.sh)**: your agents, in your pocket. The terminal for the agent era.
+- **[Dhuni](https://dhuni.net)**: a quiet listening world. 24/7 internet radio for Indian classical, based on the seasons.
+- **[Stem](https://stem.md)**: follow your curiosity. Document your rabbit holes and wander into everyone else's.
+- **[Medivalent](https://medivalent.com)**: a pharmacy guide across borders. Find the medicine you need, by brand or symptom, in 16 countries.
+- **[Samooh](https://samooh.com)**: the long game. A community for Indian-origin founders building global products.
 
 ## Past lives
 
-Feathrd, [Product Hunt](https://producthunt.com/@amrith) (community team to Head of Social; grew the audience from 200K to 400K+ organically), Opal, Stoic, Envision, and others.
+[Product Hunt](https://producthunt.com/@amrith) (community team to Head of Social; grew Twitter from 200K to 400K+, organic), Opal, Stoic, Envision, Feathrd, and others.
 
 ## Working together
 
