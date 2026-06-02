@@ -3,7 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script>(function(){try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{
+    // Theme = auto (follow Amsterdam's real time, default) | light | dark.
+    var modes=["auto","light","dark"],t=localStorage.getItem("theme"),mode=modes.indexOf(t)>=0?t:"auto",de=document.documentElement;
+    if(mode==="light"||mode==="dark"){de.setAttribute("data-theme",mode);return;}
+    de.removeAttribute("data-theme");                       // auto: scene.js drives colours; set a close bg now to avoid a flash
+    var h=parseInt(new Intl.DateTimeFormat("en-GB",{hour:"numeric",hour12:false,hourCycle:"h23",timeZone:"Europe/Amsterdam"}).format(new Date()),10),bg,light;
+    if(h<6||h>=22){bg="#0E0E10";light=1;}                   // night
+    else if(h<8||h>=21){bg="#2E2B44";light=1;}              // dawn/dusk twilight (deep)
+    else if(h>=19){bg="#F2DCC2";light=0;}                   // golden hour
+    else{bg="#F4EEDF";light=0;}                             // day
+    de.style.setProperty("--bg",bg);
+    de.style.setProperty("--text-primary",light?"#F2F2F4":"#0E0E10");
+    de.style.setProperty("--ambient-color",light?"#F4EEDF":"#0E0E10");
+  }catch(e){}})();</script>
 
   <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4SKBR3XDN7"></script>
@@ -109,6 +122,7 @@
       background: var(--bg);
       text-align: left;
       color: var(--text-primary);
+      transition: background-color 0.8s var(--ease), color 0.8s var(--ease);
       font-family: var(--font-text);
       font-size: 15px; line-height: 22px;
       -webkit-font-smoothing: antialiased;
@@ -365,13 +379,29 @@
   </script>
 </head>
 <body>
-  <button id="theme" class="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme (sun/moon, or press t)"></button>
+  <button id="theme" class="theme-toggle" type="button" aria-label="Theme: auto" title="Following Amsterdam time — click to flip light/dark (press t)"></button>
   <script>
     (function(){
-      var btn=document.getElementById("theme");
-      function eff(){var t=document.documentElement.getAttribute("data-theme");return t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");}
-      function toggle(){var n=eff()==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("theme",n);}catch(e){}}
+      var btn=document.getElementById("theme"),de=document.documentElement,modes=["auto","light","dark"];
+      function get(){try{var t=localStorage.getItem("theme");if(modes.indexOf(t)>=0)return t;}catch(e){}return "auto";}
+      // Rough "is it dark in Amsterdam now" until scene.js reports the real value.
+      function darkNow(){
+        if(typeof window.__skyDark==="boolean")return window.__skyDark;
+        try{var h=parseInt(new Intl.DateTimeFormat("en-GB",{hour:"numeric",hour12:false,hourCycle:"h23",timeZone:"Europe/Amsterdam"}).format(new Date()),10);return h<7||h>=21;}catch(e){return false;}
+      }
+      function set(m){
+        try{localStorage.setItem("theme",m);}catch(e){}
+        if(m==="auto")de.removeAttribute("data-theme");else de.setAttribute("data-theme",m);
+        btn.setAttribute("aria-label","Theme: "+m);
+        btn.title=(m==="auto"?"Following Amsterdam time":"Pinned "+m)+" — click to "+(m==="auto"?"flip light/dark":"return to Amsterdam time")+" (press t)";
+        window.dispatchEvent(new Event("sky:refresh"));     // tell scene.js to re-resolve the sky
+      }
+      // Two-state: auto ⇄ the opposite of the real sky. A second click always
+      // returns to actual Amsterdam time. Never light→light or dark→dark.
+      function toggle(){set(get()==="auto"?(darkNow()?"light":"dark"):"auto");}
+      set(get());                                            // sync attributes/labels on load
       btn.addEventListener("click",toggle);
+      window.addEventListener("sky:toggle",toggle);          // empty-sky tap (scene.js) when no sun/moon is visible
       document.addEventListener("keydown",function(e){if((e.key==="t"||e.key==="T")&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&!e.shiftKey)toggle();});
     })();
   </script>
