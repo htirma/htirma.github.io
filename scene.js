@@ -272,7 +272,7 @@
     positionToggle();
   }
 
-  var W=0,H=0,dpr=1,PIXEL=4,CP=5,treePix=6,cellsX=0,cellsY=0,isMobile=false,C=null;
+  var W=0,H=0,dpr=1,PIXEL=4,CP=5,treePix=6,cellsX=0,cellsY=0,isMobile=false,bigScale=1,C=null;
   var byColor=[],lit=[],boats=[],trees=[],colTop=[],colCol=[];
   var waterTopRow=0,waterBotRow=0,feetY=0,promY=0,safeL=-1,safeR=-1,GUT=20;
   var SHOW_WALKER=false; // Amrith + Sando — flip to true once the sprites are perfected
@@ -292,9 +292,22 @@
     if(main){var r=main.getBoundingClientRect();safeL=r.left;safeR=r.right;cb=r.bottom;ctp=r.top;}
     else{safeL=safeR=-1;cb=H*0.6;ctp=H*0.1;}
     contentTopY=ctp;
-    var wTopY=cb+6, maxWater=isMobile?0:88;
-    var wBotY=Math.min(wTopY+maxWater, walkerTopY-30);
-    if(wBotY<wTopY+18)wBotY=wTopY+18;
+    var wTopY,wBotY;
+    if(bigScale>1){
+      // Large displays (>1536px): anchor the canal just above the promenade so
+      // houses → water → walkers read as one waterfront, and the freed vertical
+      // space becomes open sky. Falls back to tucking under the content if it
+      // would otherwise overlap the text.
+      var waterH=Math.round(64*bigScale);
+      wBotY=walkerTopY-30;
+      wTopY=wBotY-waterH;
+      if(wTopY<cb+6){wTopY=cb+6;if(wBotY<wTopY+18)wBotY=wTopY+18;}
+    } else {
+      // 13–14" Macs, smaller laptops, and phones: unchanged from before.
+      var maxWater=isMobile?0:88;
+      wTopY=cb+6; wBotY=Math.min(wTopY+maxWater,walkerTopY-30);
+      if(wBotY<wTopY+18)wBotY=wTopY+18;
+    }
     waterTopRow=Math.round(wTopY/PIXEL); waterBotRow=Math.round(wBotY/PIXEL);
     return {baseRow:waterTopRow-1};
   }
@@ -343,12 +356,15 @@
   function resize(){
     dpr=Math.min(window.devicePixelRatio||1,2);
     W=window.innerWidth;H=window.innerHeight;isMobile=W<=540;
-    PIXEL=isMobile?3:4;CP=isMobile?4:5;treePix=isMobile?5:7;
+    // Scale the pixel scene up on screens larger than a 13–14" Mac (≤1536px),
+    // so it grows with the display instead of staying tiny. Mobile is untouched.
+    bigScale=isMobile?1:Math.min(1.7,Math.max(1,1+(W-1536)/2200));
+    PIXEL=isMobile?3:Math.round(4*bigScale);CP=isMobile?4:Math.round(5*bigScale);treePix=isMobile?5:Math.round(7*bigScale);
     canvas.width=Math.floor(W*dpr);canvas.height=Math.floor(H*dpr);
     canvas.style.width=W+"px";canvas.style.height=H+"px";
     ctx.setTransform(dpr,0,0,dpr,0,0);
     if(A.x===0){A.x=W*0.35;Dg.x=A.x+44;}
-    sunR=isMobile?16:24;
+    sunR=isMobile?16:Math.round(24*bigScale);
     FX=Math.round(W*(isMobile?0.86:0.85)); FY=Math.round(H*(isMobile?0.07:0.12)); // fixed body spot (manual modes / mobile)
     var L=layout();
     skyBot=isMobile?(H+8):(waterTopRow*PIXEL-8);
@@ -454,7 +470,7 @@
     clouds=[];drops=[];stars=[];
     var top=H*0.03, bot=isMobile?H:Math.max(top+20,(waterTopRow*PIXEL)-8);
     var nC=Math.min(7,WX.clouds+(WX.precip!=="none"?2:0));
-    for(var i=0;i<nC;i++)clouds.push({x:rand()*W,y:top+rand()*(bot-top)*0.7,s:(isMobile?2:3)+Math.floor(rand()*3),v:5+rand()*10});
+    for(var i=0;i<nC;i++)clouds.push({x:rand()*W,y:top+rand()*(bot-top)*0.7,s:(isMobile?2:Math.round(3*bigScale))+Math.floor(rand()*3),v:5+rand()*10});
     if(WX.precip!=="none"){var n=WX.precip==="snow"?70:110;for(var d=0;d<n;d++)drops.push({x:rand()*W,y:rand()*bot,v:(WX.precip==="snow"?22:130)+rand()*(WX.precip==="snow"?22:90),dx:(rand()-0.5)*(WX.precip==="snow"?10:4)});}
     for(var s2=0;s2<70;s2++)stars.push({x:rand()*W,y:top+rand()*(bot-top)*0.55,p:rand()*6.28});
   }

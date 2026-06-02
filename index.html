@@ -133,6 +133,13 @@
     @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { body { animation: none; } }
 
+    /* On large displays the canal anchors to the bottom (see scene.js); centre the
+       content so it sits in the middle rather than floating up top. Gated on height
+       too, so it never collides with the bottom waterfront on short/wide screens. */
+    @media (min-width: 1537px) and (min-height: 920px) {
+      body { justify-content: center; padding-top: 4vh; padding-bottom: 4vh; }
+    }
+
     main { width: 100%; max-width: 640px; text-align: left; position: relative; z-index: 1; }
 
     /* Ambient canal scene — JS carves the content column out as a safe zone */
