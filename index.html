@@ -443,7 +443,7 @@
     <div class="offer">
       <p>Building something in consumer? I&rsquo;m always happy to <a class="talk" href="mailto:hi@amrith.co">talk</a>.</p>
       <p class="bridge">Being the bridge between the team and the people they build for, getting them to care about what we create, is what I do best.</p>
-      <p class="aside">Plus, the <a href="https://sandoinu.com" target="_blank" rel="noopener">shiba</a> (and energy) I bring to the table is a big bonus.</p>
+      <p class="aside">Plus, the <a data-blurb="sando" href="https://sandoinu.com/?ref=amrith.co" target="_blank" rel="noopener">shiba</a> (and energy) I bring to the table is a big bonus.</p>
     </div>
 
     <footer>
@@ -478,18 +478,26 @@
         stoic:{title:"Stoic",tag:"first growth hire",years:"2023–2024",href:"https://getstoic.com/?ref=amrith.co",link:"getstoic.com",
           body:"First dedicated growth hire at the journaling app (YC S19). Rebuilt the landing page, blog, SEO/ASO, and a Discord that went from 0 to hundreds of power users."},
         envision:{title:"Envision",tag:"marketing generalist",years:"2025–2026",href:"https://letsenvision.com/?ref=amrith.co",link:"letsenvision.com",
-          body:"Marketing generalist for smart glasses and assistive tech that give independence to people who are blind or have low vision. The first hardware and on-site role, and the most rewarding."}
+          body:"Marketing generalist for smart glasses and assistive tech that give independence to people who are blind or have low vision. The first hardware and on-site role, and the most rewarding."},
+        sando:{title:"Sando",tag:"the love of my life",years:"since 2021",noLink:true,file:"sando.webp",href:"https://sandoinu.com/?ref=amrith.co",link:"sandoinu.com",
+          body:"My very first dog, my best friend, my child, my world. Sando is the sweetest shiba you’ll meet. Born in Normandy, raised in Paris, now in Amsterdam, he’s as French of a shiba as you can get. Posh, classy, elegant — with some exceptions."}
       };
       var el = document.getElementById("blurb"), openKey = null;
       function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
       function render(b){
+        var src = "images/" + (b.file || (b.img + ".png"));
+        var img = '<img src="'+src+'" alt="'+esc(b.title)+'" loading="lazy" />';
+        // Most figures link to the project; some (e.g. a personal photo) don't.
+        var fig = b.noLink
+          ? '<div class="blurb-figure">'+img+'</div>'
+          : '<a class="blurb-figure" href="'+b.href+'" target="_blank" rel="noopener" aria-label="Visit '+esc(b.title)+'">'+img+'</a>';
         el.innerHTML =
           '<div class="blurb-inner">' +
           '<button class="blurb-back" type="button">← back</button>' +
           (b.tag ? '<p class="blurb-eyebrow">'+esc(b.tag)+'</p>' : '') +
           '<h2 class="blurb-title">'+esc(b.title)+'</h2>' +
           (b.years ? '<p class="blurb-years">'+esc(b.years)+'</p>' : '') +
-          '<a class="blurb-figure" href="'+b.href+'" target="_blank" rel="noopener" aria-label="Visit '+esc(b.title)+'"><img src="images/'+b.img+'.png" alt="'+esc(b.title)+'" loading="lazy" /></a>' +
+          fig +
           '<p class="blurb-body">'+esc(b.body)+'</p>' +
           '<a class="blurb-visit" href="'+b.href+'" target="_blank" rel="noopener">'+esc(b.link)+' →</a>' +
           '</div>';
