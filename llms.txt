@@ -13,8 +13,15 @@ Amrith (@amrith) is a builder and a community and organic-growth generalist. For
 - [Samooh](https://samooh.com): a community for Indian-origin founders building global products.
 
 ## Past lives
-Feathrd, Product Hunt, Opal, Stoic, Envision, and others.
-- [Product Hunt](https://producthunt.com/@amrith): community team to Head of Social; grew the audience from 200K to 400K+ organically.
+- [Feathrd](https://feathrd.co) (2014–2017, where it started): a high school side project that became a community of 100+ student makers across 15 countries, collaborating and launching things on Product Hunt. The thing that started everything — including the Product Hunt chapter.
+- [Product Hunt](https://producthunt.com/@amrith) (2017–2020, Head of Social): joined the community team as an intern, left as Head of Social. Grew the Twitter audience from 200K to 400K+ followers — all organic, zero spend — and refined the voice that still runs.
+- [Opal](https://opalapp.com) (2020–2022, founding team): the first full-time hire doing things that don't scale. Built community, audience, and brand voice from zero, and moved to Paris to do it. Now a focus app used by millions.
+- [Stoic](https://getstoic.com) (2023–2024, first growth hire): first dedicated growth hire at the journaling app (YC S19). Rebuilt the landing page, blog, SEO/ASO, and a Discord that went from 0 to hundreds of power users.
+- [Envision](https://letsenvision.com) (2025–2026, marketing generalist): marketing generalist for smart glasses and assistive tech that give independence to people who are blind or have low vision. His first hardware and on-site role, and the most rewarding.
+- And others.
+
+## Personal
+- [Sando](https://sandoinu.com) (the love of his life, since 2021): Amrith's first dog and best friend, the sweetest shiba you'll meet. Born in Normandy, raised in Paris, now in Amsterdam — about as French as a shiba can get. Posh, classy, elegant — with some exceptions.
 
 ## Working together
 Amrith is happy to talk to founders building in consumer who want help with community, organic growth, ASO/SEO, and product-led growth. No pitch necessary.
