@@ -1,0 +1,15 @@
+#!/bin/sh
+# Auto-bump the JSON-LD "dateModified" in index.html whenever it's committed,
+# so the ProfilePage structured data always reflects the latest change.
+# Activated via: git config core.hooksPath .githooks
+git diff --cached --name-only | grep -q '^index\.html$' || exit 0
+python3 - <<'PY' || exit 0
+import re, datetime
+now = datetime.datetime.now().astimezone().replace(microsecond=0).isoformat()
+s = open("index.html").read()
+s2 = re.sub(r'("dateModified":\s*")[^"]*(")', lambda m: m.group(1) + now + m.group(2), s, count=1)
+if s2 != s:
+    open("index.html", "w").write(s2)
+PY
+git add index.html
+exit 0
