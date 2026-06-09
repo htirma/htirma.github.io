@@ -133,10 +133,11 @@
     @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { body { animation: none; } }
 
-    /* On large displays the canal anchors to the bottom (see scene.js); centre the
+    /* On tall viewports the canal anchors to the bottom (see scene.js); centre the
        content so it sits in the middle rather than floating up top. Gated on height
-       too, so it never collides with the bottom waterfront on short/wide screens. */
-    @media (min-width: 1537px) and (min-height: 920px) {
+       (matching scene.js), so it catches tall iPads but leaves 13–14" Macs
+       (≤~982px tall) and short/landscape phones top-aligned. */
+    @media (min-height: 1000px) {
       body { justify-content: center; padding-top: 4vh; padding-bottom: 4vh; }
     }
 
@@ -280,6 +281,18 @@
       .offer { padding-top: 18px; margin-bottom: 16px; }
     }
 
+    /* Tall phones (e.g. iPhone Pro Max portrait): the content doesn't fill the
+       screen, so centre it (more top breathing room, less void at the bottom) and
+       reserve the bottom band for the chilling pair. `safe` falls back to
+       top-aligned + scroll on phones where the content would overflow. */
+    @media (max-width: 540px) and (min-height: 760px) {
+      body {
+        justify-content: safe center;
+        padding-top: max(28px, env(safe-area-inset-top, 0));
+        padding-bottom: max(104px, env(safe-area-inset-bottom, 0));
+      }
+    }
+
     /* ── Blurb overlay (seamless expand; landing stays put underneath) ── */
     [data-blurb] { cursor: pointer; }
     main { transition: opacity .32s var(--ease); }
@@ -358,7 +371,7 @@
     "@type": "ProfilePage",
     "url": "https://amrith.co/",
     "dateCreated": "2026-05-30T03:20:57+02:00",
-    "dateModified": "2026-06-04T11:02:40+02:00",
+    "dateModified": "2026-06-09T14:43:51+02:00",
     "mainEntity": {
       "@type": "Person",
       "name": "Amrith Shanbhag",

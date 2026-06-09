@@ -278,7 +278,7 @@
   var SHOW_WALKER=false; // Amrith + Sando — flip to true once the sprites are perfected
   var A={x:0,dir:1,speed:50,target:50,timer:1.5,mode:"walk",leg:0,pet:0,petT:1,peeTree:null};
   var Dg={x:0,dir:1,leg:0,pose:"walk"};
-  var contentTopY=0,sunR=22,skyBot=0,FX=0,FY=0,bodyX=0,bodyY=0,bSun=null,bMoon=null,NF=0,litFrac=1;
+  var contentTopY=0,contentBotY=0,sunR=22,skyBot=0,FX=0,FY=0,bodyX=0,bodyY=0,bSun=null,bMoon=null,NF=0,litFrac=1;
   var hearts=[], amrithBox=null, sandoBox=null;
   var WX={code:0,clouds:1,precip:"none"},clouds=[],drops=[],stars=[],weatherFetched=false;
 
@@ -291,21 +291,21 @@
     var walkerTopY=feetY-P_STAND.length*CP, cb,ctp;
     if(main){var r=main.getBoundingClientRect();safeL=r.left;safeR=r.right;cb=r.bottom;ctp=r.top;}
     else{safeL=safeR=-1;cb=H*0.6;ctp=H*0.1;}
-    contentTopY=ctp;
+    contentTopY=ctp; contentBotY=cb;
     var wTopY,wBotY;
-    if(bigScale>1){
-      // Large displays (>1536px): anchor the canal just above the promenade so
-      // houses → water → walkers read as one waterfront, and the freed vertical
-      // space becomes open sky. Falls back to tucking under the content if it
-      // would otherwise overlap the text.
+    if(isMobile){
+      wTopY=cb+6; wBotY=Math.min(wTopY,walkerTopY-30);
+      if(wBotY<wTopY+18)wBotY=wTopY+18;
+    } else if(H>=1000){
+      // Tall viewports (iPads, large displays): content is centred (matching CSS),
+      // so anchor the canal just above the promenade — houses → water → walkers
+      // read as one waterfront and the freed space becomes open sky.
       var waterH=Math.round(64*bigScale);
-      wBotY=walkerTopY-30;
-      wTopY=wBotY-waterH;
-      if(wTopY<cb+6){wTopY=cb+6;if(wBotY<wTopY+18)wBotY=wTopY+18;}
+      wBotY=walkerTopY-30; wTopY=wBotY-waterH;
+      if(wTopY<cb+6){wTopY=cb+6; if(wBotY<wTopY+18)wBotY=wTopY+18;}
     } else {
-      // 13–14" Macs, smaller laptops, and phones: unchanged from before.
-      var maxWater=isMobile?0:88;
-      wTopY=cb+6; wBotY=Math.min(wTopY+maxWater,walkerTopY-30);
+      // 13–14" Macs and smaller laptops: tuck flush under the content (unchanged).
+      wTopY=cb+6; wBotY=Math.min(wTopY+88,walkerTopY-30);
       if(wBotY<wTopY+18)wBotY=wTopY+18;
     }
     waterTopRow=Math.round(wTopY/PIXEL); waterBotRow=Math.round(wBotY/PIXEL);
@@ -355,7 +355,7 @@
 
   function resize(){
     dpr=Math.min(window.devicePixelRatio||1,2);
-    W=window.innerWidth;H=window.innerHeight;isMobile=W<=540;
+    W=window.innerWidth;H=window.innerHeight;isMobile=W<=540||H<=540;   // short screens (e.g. phone landscape) use the compact layout too
     // Scale the pixel scene up on screens larger than a 13–14" Mac (≤1536px),
     // so it grows with the display instead of staying tiny. Mobile is untouched.
     bigScale=isMobile?1:Math.min(1.7,Math.max(1,1+(W-1536)/2200));
@@ -433,6 +433,10 @@
     var gap=2*cp, pairW=dw*cp+gap+aw*cp;
     var ground=isMobile?(H-12):promY;
     var cx=isMobile?(W-16-pairW):Math.round(W/2-pairW/2);
+    // Short/landscape screens (e.g. iPad landscape): the centred pair can overlap
+    // the content column. If it would, and the right margin has room, tuck it to
+    // the bottom-right — clear of the text — like the mobile placement.
+    if(!isMobile && safeR>0 && (ground-21*cp) < contentBotY && (W-safeR) >= pairW+24) cx=W-16-pairW;
     var seatY=ground-5*cp;                                    // raised bench seat (desktop)
     if(!isMobile)drawBench(cx-cp,seatY,pairW+2*cp,ground,cp); // backless bench, behind the pair
     var bobA=Math.round(Math.sin(t*0.0016)*2), bobD=Math.round(Math.sin(t*0.0016+1.7)*2);
