@@ -353,6 +353,21 @@
       transition: transform .25s var(--ease);
     }
     .blurb-visit:hover::after { transform: scaleX(1); }
+    /* Nested projects surfaced inside a parent's modal, as a one-line roster
+       (e.g. Dhuni · Biriyani within Samooh) */
+    .blurb-related { margin-bottom: 28px; }
+    .blurb-related-lead {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 9px;
+    }
+    .blurb-related .roster { font-size: 14px; }
+    .blurb-child {
+      background: none; border: 0; padding: 0; cursor: pointer; font: inherit; color: inherit;
+      vertical-align: baseline;
+      text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+      text-decoration-color: color-mix(in srgb, currentColor 32%, transparent);
+    }
+    .blurb-child:hover { text-decoration-color: currentColor; }
     @media (max-width: 540px) {
       .blurb {
         justify-content: center;
@@ -371,7 +386,7 @@
     "@type": "ProfilePage",
     "url": "https://amrith.co/",
     "dateCreated": "2026-05-30T03:20:57+02:00",
-    "dateModified": "2026-06-09T14:43:51+02:00",
+    "dateModified": "2026-06-11T15:46:53+02:00",
     "mainEntity": {
       "@type": "Person",
       "name": "Amrith Shanbhag",
@@ -445,13 +460,11 @@
     <div class="block block--now">
       <p class="eyebrow">exploring</p>
       <ul class="roster">
+        <li><a data-blurb="samooh" href="https://samooh.com/?ref=amrith.co" target="_blank" rel="noopener">Samooh</a></li><li class="sep">&middot;</li>
         <li><a data-blurb="timebase" href="https://timebase.me/?ref=amrith.co" target="_blank" rel="noopener">Timebase</a></li><li class="sep">&middot;</li>
-        <li><a data-blurb="shio" href="https://shio.sh/?ref=amrith.co" target="_blank" rel="noopener">Shio</a></li><li class="sep">&middot;</li>
-        <li><a data-blurb="dhuni" href="https://dhuni.net/?ref=amrith.co" target="_blank" rel="noopener">Dhuni</a></li><li class="sep">&middot;</li>
-        <li><a data-blurb="stem" href="https://stem.md/?ref=amrith.co" target="_blank" rel="noopener">Stem</a></li><li class="sep">&middot;</li>
-        <li><a data-blurb="medivalent" href="https://medivalent.com/?ref=amrith.co" target="_blank" rel="noopener">Medivalent</a></li>
+        <li><a data-blurb="shio" href="https://shio.sh/?ref=amrith.co" target="_blank" rel="noopener">Shio</a></li>
       </ul>
-      <span class="note">&amp; <a data-blurb="samooh" href="https://samooh.com/?ref=amrith.co" target="_blank" rel="noopener">Samooh</a>, a community for Indian-origin founders building global products.</span>
+      <span class="note">and more under <a data-blurb="ekpani" href="https://ekpani.com/?ref=amrith.co" target="_blank" rel="noopener">Ekpani</a>, my indie lab.</span>
     </div>
 
     <div class="block block--before">
@@ -489,11 +502,17 @@
           body:"Shio is the terminal for the agent era that lives in your pocket. It connects to your own machines (your Mac, a server, a Pi in the closet) and the coding agents you run on them: Claude Code, Codex, local models, anything. No account, no cloud of ours."},
         dhuni:{title:"Dhuni",tag:"a quiet listening world",href:"https://dhuni.net/?ref=amrith.co",link:"dhuni.net",
           body:"24/7 internet radio for Indian classical — Hindustani, Carnatic, instrumental, and vintage music based on the seasons."},
+        biriyani:{title:"Biriyani",tag:"one name, many dishes",href:"https://biriyani.wiki/?ref=amrith.co",link:"biriyani.wiki",file:"biriyani.svg",
+          body:"A visual archive of India’s biriyani dialects — Awadhi dum, Dindigul, Konkan fish — parallel dishes that share a name. Where each comes from, what sets it apart, and who still cooks it right."},
+        pasture:{title:"Pasture",tag:"local AI on your iPhone",href:"https://pasture.sh/?ref=amrith.co",link:"pasture.sh",
+          body:"A native iOS app that brings local AI to your iPhone, pairing with Ollama on your Mac with zero setup and nothing leaving your devices. The quiet predecessor to {{shio}}, and its closest cousin."},
+        ekpani:{title:"Ekpani",tag:"tools and spaces that should exist",href:"https://ekpani.com/?ref=amrith.co",link:"ekpani.com",children:["pasture","stem","medivalent"],childrenLead:"Experimenting with",
+          body:"Konkani for one leaf, Ekpani is my independent lab: the quiet root that everything else traces back to. Each keeps its own name and identity, built slowly and quietly, one leaf at a time."},
         stem:{title:"Stem",tag:"follow your curiosity",href:"https://stem.md/?ref=amrith.co",link:"stem.md",
           body:"The place your curiosity is looking for. Document your rabbit holes and niche interests, and wander into everyone else’s. Find trails worth following; leave trails worth finding."},
         medivalent:{title:"Medivalent",tag:"pharmacy guide across borders",href:"https://medivalent.com/?ref=amrith.co",link:"medivalent.com",
           body:"Find the medicine you need, by brand or symptom, in 16 countries. For travelers, nomads, expats, and anyone abroad."},
-        samooh:{title:"Samooh",tag:"the long game",href:"https://samooh.com/?ref=amrith.co",link:"samooh.com",
+        samooh:{title:"Samooh",tag:"the long game",href:"https://samooh.com/?ref=amrith.co",link:"samooh.com",children:["dhuni","biriyani"],childrenLead:"Fun side projects",
           body:"A community for Indian-origin founders building global products. The throughline behind the rest — a decade of community work, pointed at home."},
         feathrd:{title:"Feathrd",tag:"where it started",years:"2014–2017",href:"https://feathrd.co/?ref=amrith.co",link:"feathrd.co",
           body:"A high school side project that became a community of 100+ student makers across 15 countries, collaborating and launching things on Product Hunt. The thing that started everything — including the Product Hunt chapter."},
@@ -524,7 +543,8 @@
           '<h2 class="blurb-title">'+esc(b.title)+'</h2>' +
           (b.years ? '<p class="blurb-years">'+esc(b.years)+'</p>' : '') +
           fig +
-          '<p class="blurb-body">'+esc(b.body)+'</p>' +
+          '<p class="blurb-body">'+esc(b.body).replace(/\{\{(\w+)\}\}/g,function(_,k){return B[k]?'<button class="blurb-child" type="button" data-child="'+k+'">'+esc(B[k].title)+'</button>':k;})+'</p>' +
+          (b.children && b.children.length ? '<div class="blurb-related"><p class="blurb-related-lead">'+esc(b.childrenLead||"")+'</p><ul class="roster">'+b.children.filter(function(c){return B[c];}).map(function(c){return '<li><button class="blurb-child" type="button" data-child="'+c+'">'+esc(B[c].title)+'</button></li>';}).join('<li class="sep">&middot;</li>')+'</ul></div>' : '') +
           '<a class="blurb-visit" href="'+b.href+'" target="_blank" rel="noopener">'+esc(b.link)+' →</a>' +
           '</div>';
       }
@@ -535,12 +555,18 @@
         a.addEventListener("click",function(e){var k=a.getAttribute("data-blurb");if(!B[k])return;e.preventDefault();open(k,true);});
       });
       el.addEventListener("click",function(e){
+        var kid=e.target.closest("[data-child]");
+        if(kid){open(kid.getAttribute("data-child"),true);return;}   // open a nested project; its back returns here
         if(e.target.closest(".blurb-visit"))return;          // let the visit link work
         if(e.target.closest(".blurb-back")){back();return;}
         if(!e.target.closest(".blurb-inner"))back();          // tap outside the text closes
       });
       document.addEventListener("keydown",function(e){if(e.key==="Escape"&&openKey)back();});
-      window.addEventListener("popstate",function(){if(openKey)close();});
+      window.addEventListener("popstate",function(e){
+        var k=e.state&&e.state.blurb;
+        if(k&&B[k]){open(k,false);}                          // back into a parent modal (e.g. Samooh from Dhuni)
+        else if(openKey){close();}
+      });
     })();
   </script>
 </body>

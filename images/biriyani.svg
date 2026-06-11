@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#f6f1e7"/>
+
+  <!-- Top rule -->
+  <line x1="80" y1="100" x2="1120" y2="100" stroke="#2b1c15" stroke-width="1" opacity="0.18"/>
+
+  <!-- Kicker -->
+  <text x="80" y="80" font-family="Manrope, system-ui, sans-serif" font-size="20" font-weight="600" letter-spacing="6" fill="#bf6f24">
+    INDIA, GRAIN BY GRAIN
+  </text>
+
+  <!-- Headline (flat, no italics, two lines) -->
+  <text x="80" y="280" font-family="Cormorant Garamond, Georgia, serif" font-size="100" font-weight="500" fill="#2b1c15">
+    A visual archive of
+  </text>
+  <text x="80" y="390" font-family="Cormorant Garamond, Georgia, serif" font-size="100" font-weight="500" fill="#2b1c15">
+    India's biriyanis.
+  </text>
+
+  <!-- Bottom rule -->
+  <line x1="80" y1="540" x2="1120" y2="540" stroke="#2b1c15" stroke-width="1" opacity="0.18"/>
+
+  <!-- Footer -->
+  <text x="80" y="580" font-family="Manrope, system-ui, sans-serif" font-size="22" font-weight="500" fill="#61473a">
+    biriyani.wiki
+  </text>
+  <text x="1120" y="580" font-family="Manrope, system-ui, sans-serif" font-size="22" font-weight="500" fill="#61473a" text-anchor="end">
+    51 varieties · 16 regions
+  </text>
+</svg>
