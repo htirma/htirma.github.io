@@ -1,16 +1,25 @@
 # Amrith Shanbhag
 
-> Amrith spent a decade growing communities for consumer startups including Product Hunt. Now he builds his own products.
+> Amrith spent a decade growing communities for consumer startups including Product Hunt. Now he builds his own ideas under Ekpani, his indie lab.
 
-Amrith (@amrith) is a builder and a community and organic-growth generalist. For roughly ten years he was the first non-technical hire and the community and growth lead across consumer tech, known for organic, zero-spend growth, community building, brand, ASO/SEO, and product-led growth. He thinks of himself as the bridge between the team building a product and the people it is for: getting them to care, and turning them into the product's best marketers. Today he builds his own consumer products, for the love of the game.
+Amrith (@amrith) is a builder and a community and organic-growth generalist. For roughly ten years he was the first non-technical hire and the community and growth lead across consumer tech, known for organic, zero-spend growth, community building, brand, ASO/SEO, and product-led growth. He thinks of himself as the bridge between the team building a product and the people it is for: getting them to care, and turning them into the product's best marketers. Today he builds his own consumer products under Ekpani, for the love of the game.
+
+## Ekpani
+Everything Amrith builds lives under [Ekpani](https://ekpani.com), his independent lab. एकपानी is Konkani for "one leaf"; Ekpani is the quiet root beneath a set of separate tools and spaces, each keeping its own name and identity.
 
 ## Building now
+- [Samooh](https://samooh.com): a community for Indian-origin founders building global products. The long game, and the most personal.
 - [Timebase](https://timebase.me): a calmer way to visualize and plan across time zones; get countdowns to events on your calendar, and plan meetings at a time that works for everyone.
 - [Shio](https://shio.sh): a mobile-first terminal built for the agent era.
-- [Dhuni](https://dhuni.net): a 24/7 internet radio for Indian classical, Hindustani, Carnatic, instrumental, and vintage music; a quiet listening world for deep focus, by Samooh.
+
+## Experimenting with (under Ekpani)
+- [Pasture](https://pasture.sh): a native iOS app that brings local AI to your iPhone, pairing with Ollama on your Mac with zero setup; nothing leaves your devices. The predecessor to Shio.
 - [Stem](https://stem.md): the place your curiosity is looking for. A social platform for documenting your rabbit holes and niche interests, and exploring others'. Find trails worth following; leave trails worth finding.
 - [Medivalent](https://medivalent.com): cross-border medicine equivalence; find the local equivalent of a medicine in another country.
-- [Samooh](https://samooh.com): a community for Indian-origin founders building global products.
+
+## Fun side projects (by Samooh)
+- [Dhuni](https://dhuni.net): a 24/7 internet radio for Indian classical, Hindustani, Carnatic, instrumental, and vintage music; a quiet listening world for deep focus.
+- [Biriyani](https://biriyani.wiki): a visual archive of India's regional biriyani dialects, parallel dishes that share a name. Where each comes from, what sets it apart, and who still cooks it right.
 
 ## Past lives
 - [Feathrd](https://feathrd.co) (2014–2017, where it started): a high school side project that became a community of 100+ student makers across 15 countries, collaborating and launching things on Product Hunt. The thing that started everything — including the Product Hunt chapter.
