@@ -12,10 +12,12 @@ Everything Amrith builds lives under [Aspatial](https://aspatial.co), his indepe
 - [Timebase](https://timebase.me): a calmer way to visualize and plan across time zones; get countdowns to events on your calendar, and plan meetings at a time that works for everyone.
 - [Shio](https://shio.sh): a mobile-first terminal built for the agent era.
 
-## Experimenting with (under Aspatial)
-- [Pasture](https://pasture.sh): a native iOS app that brings local AI to your iPhone, pairing with Ollama on your Mac with zero setup; nothing leaves your devices. The predecessor to Shio.
-- [Stem](https://stem.md): the place your curiosity is looking for. A social platform for documenting your rabbit holes and niche interests, and exploring others'. Find trails worth following; leave trails worth finding.
+## Tools and spaces (under Aspatial)
+- [Shio](https://shio.sh): a mobile-first terminal built for the agent era.
+- [Timebase](https://timebase.me): a calmer way to visualize and plan across time zones.
+- [Outage Observer](https://outage.observer): live status for the infrastructure and AI providers in your stack.
 - [Medivalent](https://medivalent.com): cross-border medicine equivalence; find the local equivalent of a medicine in another country.
+- [Stem](https://stem.md): the place your curiosity is looking for. A social platform for documenting your rabbit holes and niche interests, and exploring others'. Find trails worth following; leave trails worth finding.
 
 ## Fun side projects (by Samooh)
 - [Dhuni](https://dhuni.net): a 24/7 internet radio for Indian classical, Hindustani, Carnatic, instrumental, and vintage music; a quiet listening world for deep focus.
