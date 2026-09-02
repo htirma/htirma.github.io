@@ -5,7 +5,7 @@
 Amrith (@amrith) is a builder and a community and organic-growth generalist. For roughly ten years he was the first non-technical hire and the community and growth lead across consumer tech, known for organic, zero-spend growth, community building, brand, ASO/SEO, and product-led growth. He thinks of himself as the bridge between the team building a product and the people it is for: getting them to care, and turning them into the product's best marketers. Today he builds his own consumer products under Dusk Research, for the love of the game.
 
 ## Dusk Research
-Everything Amrith builds lives under [Dusk Research](https://duskresearch.com), his independent lab, named for the hour when his best work starts. It is the quiet root beneath a set of separate tools and spaces, each keeping its own name and identity, and none of them tied to one place or one kind of problem.
+Everything Amrith builds lives under [Dusk Research](https://duskresearch.com), his software lab. His best work happens when it's quiet everywhere else. Dusk Research builds things people would use every day: some become products, some stay explorations, some evolve. Every project keeps its own name and stands on its own.
 
 ## Building now
 - [Samooh](https://samooh.com): a community for Indian-origin founders building global products. The long game, and the most personal.
