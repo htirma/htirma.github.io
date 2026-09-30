@@ -7,15 +7,18 @@ Amrith (@amrith) is a builder and a community and organic-growth generalist. For
 ## Dusk Research
 Everything Amrith builds lives under [Dusk Research](https://duskresearch.com), his software lab. His best work happens when it's quiet everywhere else. Dusk Research builds things people would use every day: some become products, some stay explorations, some evolve. Every project keeps its own name and stands on its own.
 
-## Building now
-- [Samooh](https://samooh.com): a community for Indian-origin founders building global products. The long game, and the most personal.
+## Building now (under Dusk Research)
+- [Amodal](https://amodal.co): orchestrate your coding agents from anywhere. One conversation for Claude Code, Codex and more, with shared context and persistent memory.
+- [Infer](https://infer.fyi): an open-source AI browser powered by local models, for Mac, iPhone, and iPad. It remembers what you read, and nothing leaves your device.
+- [Primitives](https://primitiv.es): instruments for the fundamentals of design. One question per screen, and every answer is a link.
 - [Timebase](https://timebase.me): a calmer way to visualize and plan across time zones; get countdowns to events on your calendar, and plan meetings at a time that works for everyone.
-- [Shio](https://shio.sh): a mobile-first terminal built for the agent era.
 
-## Tools and spaces (under Dusk Research)
-- [Shio](https://shio.sh): a mobile-first terminal built for the agent era.
-- [Timebase](https://timebase.me): a calmer way to visualize and plan across time zones.
+## Samooh
+- [Samooh](https://samooh.com): a community for Indian-origin founders building global products. The long game, and the most personal.
+
+## More from Dusk Research
 - [Outage Observer](https://outage.observer): live status for the infrastructure and AI providers in your stack.
+- [Shio](https://shio.sh): a mobile-first terminal built for the agent era.
 - [Medivalent](https://medivalent.com): cross-border medicine equivalence; find the local equivalent of a medicine in another country.
 - [Stem](https://stem.md): the place your curiosity is looking for. A social platform for documenting your rabbit holes and niche interests, and exploring others'. Find trails worth following; leave trails worth finding.
 
