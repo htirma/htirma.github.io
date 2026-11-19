@@ -14,7 +14,7 @@ export default defineConfig({
 			notFoundHandling: "none",
 			runWorkerFirst: ["/", "/og.png", "/og.mp4"],
 		},
-		domains: [],
+		domains: ["amrith.co", "www.amrith.co"],
 		workersDev: true,
 		previewUrls: false,
 		observability: { enabled: true },
