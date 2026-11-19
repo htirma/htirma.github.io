@@ -17,7 +17,7 @@
 
 ---
 
-The source for **[amrith.co](https://amrith.co)**: a single, restrained page. Vanilla HTML and CSS, no build step, no dependencies, hosted on GitHub Pages.
+The source for **[amrith.co](https://amrith.co)**: a single, restrained page. Vanilla HTML and CSS, no build step. Served by the Cloudflare Worker `amrith` (`worker/`, deploy with `cd worker && npm run deploy`), which copies the site from the repo root and picks the link-preview card (`/og.png`, `/og.mp4`) for Amsterdam's current sun phase and weather. GitHub Pages stays as the fallback until the DNS move settles. Cards are rendered from `scratch/og-motion.html`.
 
 ## Building now
 

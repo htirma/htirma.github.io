@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OG motion, amrith.co</title>
+<style>
+  @font-face{font-family:"Departure Mono";src:url("../fonts/DepartureMono-Regular.woff2") format("woff2"),url("../fonts/DepartureMono-Regular.woff") format("woff");font-weight:400;font-style:normal;font-display:block;}
+  body{margin:0;background:#2a2a2e;color:#ddd;font:14px -apple-system,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px;}
+  body.capture{padding:0;background:#000;}
+  body.capture .controls{display:none;}
+  .stage{box-shadow:0 10px 40px rgba(0,0,0,.5);border-radius:8px;overflow:hidden;}
+  body.capture .stage{box-shadow:none;border-radius:0;}
+  canvas{display:block;width:600px;height:315px;}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;}
+  button{font:13px ui-monospace,monospace;background:#1c1c1e;color:#eee;border:1px solid #444;border-radius:8px;padding:8px 14px;cursor:pointer;}
+  button.on{background:#E8DCC4;color:#0E0E10;border-color:#E8DCC4;}
+  label{opacity:.7;margin-right:4px;}
+</style>
+</head>
+<body>
+  <div class="stage"><canvas id="c" width="2400" height="1260"></canvas></div>
+  <div class="controls">
+    <span><label>phase</label>
+      <button data-s="dawn">dawn</button><button data-s="sunrise">sunrise</button><button data-s="day" class="on">day</button>
+      <button data-s="sunset">sunset</button><button data-s="dusk">dusk</button><button data-s="night">night</button></span>
+    <span><label>weather</label>
+      <button data-w="clear" class="on">clear</button><button data-w="partly">partly</button><button data-w="cloudy">cloudy</button>
+      <button data-w="rain">rain</button><button data-w="snow">snow</button></span>
+  </div>
+<script>
+(function(){
+  // The amrith.co OG card, animated. Every motion loops exactly over LOOP ms so the
+  // exported video repeats seamlessly. Palette = scene.js's sun-phase table.
+  var Q=new URLSearchParams(location.search);
+  var canvas=document.getElementById("c"), ctx=canvas.getContext("2d");
+  var SCALE=2; ctx.setTransform(SCALE,0,0,SCALE,0,0);
+  var W=1200,H=630,PIXEL=4,CP=6,treePix=8,LOOP=8000,TAU=Math.PI*2;
+  var seedV=20101207, weather=Q.get("weather")||"clear", sky=Q.get("phase")||"day", t=0;
+  var capture=Q.get("capture")==="1"; if(capture)document.body.classList.add("capture");
+
+  var P_SIT=[
+    "...HHHHHHH...","..HHHHHHHHH..",".HHHHHHHHHHH.","HHHHHHHHHHHHH",
+    "HHHHHHHHHHHHH","HHHKKKKKKKKKH",".KGGGGKGGGGK.",".KGwnGGGnwGK.",
+    ".KGGGGKGGGGK.",".KKKKKKKKKKK.","...KKppKKK...","....KKKKK....",
+    ".JJJJJJJJJJJ.",".JLJJJJJJJLJ.",".JLJJJJJJJLJ.",".KLJJJJJJJLK.",
+    ".JJJJJJJJJJJ.","..PPP...PPP..","..SSS...SSS.."
+  ];
+  var D_SIT=[
+    "..O...O..",".OO...OO.",".OOOOOOO.",".OnOOOnO.",".OOnnnOO.",
+    ".OcccccO.","OcccccccO","OcccccccO",".OcccccO.",".OO...OO."
+  ];
+  var TREE_A=[
+    "....FFF....","...FFFFF...","..FFFFFFF..",".FFFFFFFFF.","FFFFFFFFFFF","FFFFFFFFFFF",
+    "FFFFFFFFFFF",".FFFFFFFFF.",".FFFFFFFFF.","..FFFFFFF..","..FFFFFFF..","...FFFFF...",
+    "....FFF....",".....T.....",".....T.....",".....T.....",".....T.....",".....T.....","....TTT...."
+  ];
+  var TREE_B=[
+    "..FFFFF..",".FFFFFFF.","FFFFFFFFF","FFFFFFFFF","FFFFFFFFF",".FFFFFFF.",".FFFFFFF.",
+    "..FFFFF..","...FFF...","....T....","....T....","....T....","....T....","...TTT..."
+  ];
+  var BOAT=["...##......","..####.....","###########",".#########."];
+
+
+  function srng(s){return function(){s|=0;s=(s+0x6D2B79F5)|0;var x=Math.imul(s^(s>>>15),1|s);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};}
+  function cell(cx,cy){ctx.fillRect(cx*PIXEL,cy*PIXEL,PIXEL,PIXEL);}
+  function spr(map,x,y,s){for(var r=0;r<map.length;r++){var row=map[r];for(var k=0;k<row.length;k++){var ch=row.charAt(k);if(ch===".")continue;var col=C[ch];if(!col)continue;ctx.fillStyle=col;ctx.fillRect(x+k*s,y+r*s,s,s);}}}
+  function sprC(map,x,y,s,color){ctx.fillStyle=color;for(var r=0;r<map.length;r++){var row=map[r];for(var k=0;k<row.length;k++)if(row.charAt(k)==="#")ctx.fillRect(x+k*s,y+r*s,s,s);}}
+
+  var cellsX,cellsY,waterTopRow,waterBotRow,promY,byColor,lit,boats,trees,colTop,colCol;
+
+  function build(){
+    cellsX=Math.ceil(W/PIXEL); cellsY=Math.ceil(H/PIXEL);
+    promY=H-58;                                 // quay line near the bottom; pair + trees stand here
+    waterTopRow=Math.round((H*0.74)/PIXEL);     // canal is a slim lower strip, smaller than the houses
+    waterBotRow=Math.round((promY-6)/PIXEL);    // fills down to the quay (no dead gap)
+    byColor=[];lit=[];boats=[];trees=[];colTop=new Array(cellsX).fill(-1);colCol=new Array(cellsX).fill(-1);
+    for(var i=0;i<C.houses.length;i++)byColor.push([]);
+    var R=srng(seedV);
+    function put(ci,cx,cy){if(cx<0||cx>=cellsX)return;byColor[ci].push(cx,cy);if(colTop[cx]<0||cy<colTop[cx]){colTop[cx]=cy;colCol[cx]=ci;}}
+    function row(ci,x0,x1,y){for(var x=x0;x<=x1;x++)put(ci,x,y);}
+    function oculus(oc,oy){var r=2;for(var dy=-r;dy<=r;dy++)for(var dx=-r;dx<=r;dx++)if(dx*dx+dy*dy<=r*r+1)lit.push(oc+dx,oy+dy);}
+    function ocAt(ci,oc,oy){var r=2,x,y;for(y=-r;y<=r;y++)for(x=-r;x<=r;x++){if(x*x+y*y>r*r+1)continue;if(Math.abs(x)===r||Math.abs(y)===r||(x*x+y*y>=(r-1)*(r-1)))lit.push(oc+x,oy+y);else put(ci,oc+x,oy+y);}}
+    // full-width Amsterdam gables: step, bell (klokgevel), neck (halsgevel), cornice+pediment
+    function gable(ci,c,w,top,rv,ocRoll){
+      var type=Math.floor(rv*4), oc=c+(w>>1), i, ocY=null;
+      if(type===0){ // trapgevel — step gable
+        var steps=Math.max(4,Math.round(w/6)), inset=Math.max(1,Math.floor((w/2-2)/steps));
+        for(i=0;i<steps;i++){var x0=c+i*inset,x1=c+w-1-i*inset;if(x0>x1)break;row(ci,x0,x1,top-1-i*2);row(ci,x0,x1,top-2-i*2);}
+        ocY=top-3;
+      } else if(type===1){ // klokgevel — bell gable
+        var gh=Math.max(9,Math.round(w*0.6));
+        for(i=0;i<gh;i++){var f=i/(gh-1);var ins=Math.round((w/2-1)*(f<0.22?f*0.5:Math.pow((f-0.1)/0.9,1.8)));if(ins>w/2-1)ins=Math.floor(w/2-1);row(ci,c+ins,c+w-1-ins,top-1-i);}
+        ocY=top-Math.round(gh*0.45);
+      } else if(type===2){ // halsgevel — neck gable with shoulders
+        var gh2=Math.max(10,Math.round(w*0.64)), neckW=Math.max(6,Math.round(w*0.4)), nl=oc-(neckW>>1), nr=nl+neckW-1, sh=Math.max(3,Math.round(gh2*0.4));
+        for(i=0;i<sh;i++){var t=i/sh,l=Math.round(c+t*(nl-c)),r=Math.round((c+w-1)-t*((c+w-1)-nr));row(ci,l,r,top-1-i);}
+        for(i=0;i<gh2-sh;i++)row(ci,nl,nr,top-1-sh-i);
+        for(i=0;i<Math.round(neckW/2);i++)row(ci,nl+i,nr-i,top-1-gh2-i);
+        ocY=top-sh-3;
+      } else { // verhoogde cornice with central pediment
+        var pedW=Math.max(8,Math.round(w*0.55)), pl=oc-(pedW>>1), pr=pl+pedW-1;
+        row(ci,c,c+w-1,top-1);row(ci,c,c+w-1,top-2);
+        for(i=0;i<Math.round(pedW/2);i++)row(ci,pl+i,pr-i,top-3-i);
+      }
+      // round oculus, only ~40% of houses, set into the gable (not the facade)
+      if(ocY!==null && ocRoll<0.4) ocAt(ci,oc,ocY);
+    }
+    var base=waterTopRow-1,c=0,prev=-1;
+    var mX=4,wW=2,gX=4,wH=3,gY=3;               // 2-wide window grid
+    while(c<cellsX){
+      var w=26+Math.floor(R()*16), h=24+Math.floor(R()*9);   // ~6-10 wide houses, 3-5 storeys
+      var ci=Math.floor(R()*C.houses.length); if(ci===prev)ci=(ci+1)%C.houses.length; prev=ci;
+      var top=base-h;
+      for(var cy=top;cy<=base;cy++)for(var cx=c;cx<c+w;cx++){
+        if(cx<0||cx>=cellsX)continue;
+        var fl=base-cy, dxw=cx-c;
+        var inCol=dxw>=mX&&dxw<w-mX&&((dxw-mX)%(wW+gX))<wW;
+        var inRow=fl>=2&&fl<h-1&&((fl-2)%(wH+gY))<wH;
+        if(inCol&&inRow){if(R()<0.35)lit.push(cx,cy);}   // window: mostly plain holes, a few lit (less noise)
+        else put(ci,cx,cy);
+      }
+      gable(ci,c,w,top,R(),R()); c+=w;
+    }
+    var by=(waterTopRow+1)*PIXEL;
+    boats.push({x:Math.round(W*0.16),y:by,ph:0});
+    boats.push({x:Math.round(W*0.78),y:by,ph:2.3});
+    var tx=W*(0.05+R()*0.05);
+    while(tx<W-30){ if(Math.abs(tx-W/2)>180)trees.push({x:Math.round(tx),v:R()<0.5?0:1}); tx+=W*(0.13+R()*0.13); }
+    buildSky();
+  }
+
+  var clouds,drops,stars;
+
+  // ── palette, copied from scene.js (DAY/NIGHT anchors + phase tint) ──
+  var DAY={houses:[[150,70,55],[120,82,58],[122,86,62],[72,82,110],[140,100,68],[96,86,76]],houseA:0.42,reflA:0.13,
+    win:[70,64,58,0.40],water:[96,140,144,0.22],quay:[120,100,84,0.20],boat:[64,62,66,0.42],
+    K:[186,134,96,0.94],J:[56,60,68,0.92],L:[38,42,50,0.95],p:[160,94,88,0.95],P:[46,50,58,0.92],
+    M:[92,96,106,0.95],O:[198,108,52,0.92],c:[230,212,184,0.88],F:[84,106,70,0.5],T:[98,74,54,0.55],
+    sun:[232,176,84,0.95],moon:[140,144,156,0.82],cloud:[150,150,162,0.34],rain:[110,140,165,0.42],snow:[208,216,228,0.78],star:[236,232,214,0.85]};
+  var NIGHT={houses:[[176,96,86],[150,112,86],[150,118,96],[108,118,150],[168,128,96],[120,108,96]],houseA:0.34,reflA:0.12,
+    win:[240,214,150,0.78],water:[120,168,168,0.20],quay:[150,140,128,0.16],boat:[150,150,160,0.34],
+    K:[200,150,112,0.94],J:[78,82,90,0.92],L:[52,56,64,0.95],p:[184,114,106,0.92],P:[62,66,74,0.92],
+    M:[112,116,126,0.95],O:[222,142,82,0.94],c:[238,224,200,0.9],F:[96,118,86,0.5],T:[120,92,68,0.55],
+    sun:[232,176,84,0.95],moon:[232,230,214,0.92],cloud:[120,124,134,0.30],rain:[150,180,200,0.38],snow:[228,232,240,0.72],star:[236,232,214,0.85]};
+  var INV={H:[26,24,28,0.94],G:[20,20,24,0.96],w:[232,232,236,0.96],S:[28,28,32,0.94],n:[30,26,26,0.95]};
+  var KEYS=["win","water","quay","boat","K","J","L","p","P","M","O","c","F","T","sun","moon","cloud","rain","snow","star"],SKIP={sun:1,moon:1,star:1};
+  var PHASES={
+    night:  {night:1.0, light:[255,255,255],lightAmt:0,   bg:[14,14,16],   sunY:0.15,body:"moon"},
+    dawn:   {night:0.50,light:[150,140,200],lightAmt:0.40,bg:[44,46,82],   sunY:0.15,body:"moon"},
+    sunrise:{night:0.16,light:[255,205,155],lightAmt:0.45,bg:[250,224,200],sunY:0.52,body:"sun"},
+    day:    {night:0.0, light:[255,255,255],lightAmt:0,   bg:[244,238,223],sunY:0.15,body:"sun"},
+    sunset: {night:0.18,light:[255,165,110],lightAmt:0.52,bg:[252,216,188],sunY:0.52,body:"sun"},
+    dusk:   {night:0.54,light:[200,120,150],lightAmt:0.45,bg:[60,40,64],   sunY:0.15,body:"moon"}
+  };
+  function lr(a,b,f){return a+(b-a)*f;}
+  function lerpN(a,b,f){return a.map(function(v,i){return lr(v,b[i],f);});}
+  function tc(v,l,a){return v+(v*l/255-v)*a;}
+  function tint(c,l,a){var o=[tc(c[0],l[0],a),tc(c[1],l[1],a),tc(c[2],l[2],a)];if(c.length>3)o.push(c[3]);return o;}
+  function rgba(c){return "rgba("+Math.round(c[0])+","+Math.round(c[1])+","+Math.round(c[2])+","+(c.length>3?c[3]:1)+")";}
+  function lum(c){return (0.2126*c[0]+0.7152*c[1]+0.0722*c[2])/255;}
+  function pal(){
+    var ph=PHASES[sky],n=ph.night,L=ph.light,amt=ph.lightAmt,i,k;
+    var o={phase:ph,d:lum(ph.bg)<0.3,bg:rgba(ph.bg),houses:[],houseA:lr(DAY.houseA,NIGHT.houseA,n),reflA:lr(DAY.reflA,NIGHT.reflA,n)};
+    for(i=0;i<DAY.houses.length;i++)o.houses.push(tint(lerpN(DAY.houses[i],NIGHT.houses[i],n),L,amt).map(Math.round));
+    for(k=0;k<KEYS.length;k++){var c=lerpN(DAY[KEYS[k]],NIGHT[KEYS[k]],n);if(!SKIP[KEYS[k]])c=tint(c,L,amt);o[KEYS[k]]=rgba(c);}
+    for(k in INV)o[k]=rgba(tint(INV[k],L,amt));
+    if(sky==="sunrise"||sky==="sunset")o.sun=rgba(sky==="sunset"?[236,128,72,0.95]:[240,150,90,0.95]);
+    return o;
+  }
+  var C=pal();
+
+  function srng(s){return function(){s|=0;s=(s+0x6D2B79F5)|0;var x=Math.imul(s^(s>>>15),1|s);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};}
+  function cell(cx,cy){ctx.fillRect(cx*PIXEL,cy*PIXEL,PIXEL,PIXEL);}
+  function spr(map,x,y,s){for(var r=0;r<map.length;r++){var row=map[r];for(var k=0;k<row.length;k++){var ch=row.charAt(k);if(ch===".")continue;var col=C[ch];if(!col)continue;ctx.fillStyle=col;ctx.fillRect(x+k*s,y+r*s,s,s);}}}
+  function sprC(map,x,y,s,color){ctx.fillStyle=color;for(var r=0;r<map.length;r++){var row=map[r];for(var k=0;k<row.length;k++)if(row.charAt(k)==="#")ctx.fillRect(x+k*s,y+r*s,s,s);}}
+
+  var cellsX,cellsY,waterTopRow,waterBotRow,promY,byColor,lit,boats,trees,colTop,colCol;
+
+  function build(){
+    cellsX=Math.ceil(W/PIXEL); cellsY=Math.ceil(H/PIXEL);
+    promY=H-58;                                 // quay line near the bottom; pair + trees stand here
+    waterTopRow=Math.round((H*0.74)/PIXEL);     // canal is a slim lower strip, smaller than the houses
+    waterBotRow=Math.round((promY-6)/PIXEL);    // fills down to the quay (no dead gap)
+    byColor=[];lit=[];boats=[];trees=[];colTop=new Array(cellsX).fill(-1);colCol=new Array(cellsX).fill(-1);
+    for(var i=0;i<C.houses.length;i++)byColor.push([]);
+    var R=srng(seedV);
+    function put(ci,cx,cy){if(cx<0||cx>=cellsX)return;byColor[ci].push(cx,cy);if(colTop[cx]<0||cy<colTop[cx]){colTop[cx]=cy;colCol[cx]=ci;}}
+    function row(ci,x0,x1,y){for(var x=x0;x<=x1;x++)put(ci,x,y);}
+    function oculus(oc,oy){var r=2;for(var dy=-r;dy<=r;dy++)for(var dx=-r;dx<=r;dx++)if(dx*dx+dy*dy<=r*r+1)lit.push(oc+dx,oy+dy);}
+    function ocAt(ci,oc,oy){var r=2,x,y;for(y=-r;y<=r;y++)for(x=-r;x<=r;x++){if(x*x+y*y>r*r+1)continue;if(Math.abs(x)===r||Math.abs(y)===r||(x*x+y*y>=(r-1)*(r-1)))lit.push(oc+x,oy+y);else put(ci,oc+x,oy+y);}}
+    // full-width Amsterdam gables: step, bell (klokgevel), neck (halsgevel), cornice+pediment
+    function gable(ci,c,w,top,rv,ocRoll){
+      var type=Math.floor(rv*4), oc=c+(w>>1), i, ocY=null;
+      if(type===0){ // trapgevel — step gable
+        var steps=Math.max(4,Math.round(w/6)), inset=Math.max(1,Math.floor((w/2-2)/steps));
+        for(i=0;i<steps;i++){var x0=c+i*inset,x1=c+w-1-i*inset;if(x0>x1)break;row(ci,x0,x1,top-1-i*2);row(ci,x0,x1,top-2-i*2);}
+        ocY=top-3;
+      } else if(type===1){ // klokgevel — bell gable
+        var gh=Math.max(9,Math.round(w*0.6));
+        for(i=0;i<gh;i++){var f=i/(gh-1);var ins=Math.round((w/2-1)*(f<0.22?f*0.5:Math.pow((f-0.1)/0.9,1.8)));if(ins>w/2-1)ins=Math.floor(w/2-1);row(ci,c+ins,c+w-1-ins,top-1-i);}
+        ocY=top-Math.round(gh*0.45);
+      } else if(type===2){ // halsgevel — neck gable with shoulders
+        var gh2=Math.max(10,Math.round(w*0.64)), neckW=Math.max(6,Math.round(w*0.4)), nl=oc-(neckW>>1), nr=nl+neckW-1, sh=Math.max(3,Math.round(gh2*0.4));
+        for(i=0;i<sh;i++){var t=i/sh,l=Math.round(c+t*(nl-c)),r=Math.round((c+w-1)-t*((c+w-1)-nr));row(ci,l,r,top-1-i);}
+        for(i=0;i<gh2-sh;i++)row(ci,nl,nr,top-1-sh-i);
+        for(i=0;i<Math.round(neckW/2);i++)row(ci,nl+i,nr-i,top-1-gh2-i);
+        ocY=top-sh-3;
+      } else { // verhoogde cornice with central pediment
+        var pedW=Math.max(8,Math.round(w*0.55)), pl=oc-(pedW>>1), pr=pl+pedW-1;
+        row(ci,c,c+w-1,top-1);row(ci,c,c+w-1,top-2);
+        for(i=0;i<Math.round(pedW/2);i++)row(ci,pl+i,pr-i,top-3-i);
+      }
+      // round oculus, only ~40% of houses, set into the gable (not the facade)
+      if(ocY!==null && ocRoll<0.4) ocAt(ci,oc,ocY);
+    }
+    var base=waterTopRow-1,c=0,prev=-1;
+    var mX=4,wW=2,gX=4,wH=3,gY=3;               // 2-wide window grid
+    while(c<cellsX){
+      var w=26+Math.floor(R()*16), h=24+Math.floor(R()*9);   // ~6-10 wide houses, 3-5 storeys
+      var ci=Math.floor(R()*C.houses.length); if(ci===prev)ci=(ci+1)%C.houses.length; prev=ci;
+      var top=base-h;
+      for(var cy=top;cy<=base;cy++)for(var cx=c;cx<c+w;cx++){
+        if(cx<0||cx>=cellsX)continue;
+        var fl=base-cy, dxw=cx-c;
+        var inCol=dxw>=mX&&dxw<w-mX&&((dxw-mX)%(wW+gX))<wW;
+        var inRow=fl>=2&&fl<h-1&&((fl-2)%(wH+gY))<wH;
+        if(inCol&&inRow){if(R()<0.35)lit.push(cx,cy);}   // window: mostly plain holes, a few lit (less noise)
+        else put(ci,cx,cy);
+      }
+      gable(ci,c,w,top,R(),R()); c+=w;
+    }
+    var by=(waterTopRow+1)*PIXEL;
+    boats.push({x:Math.round(W*0.16),y:by,ph:0});
+    boats.push({x:Math.round(W*0.78),y:by,ph:2.3});
+    var tx=W*(0.05+R()*0.05);
+    while(tx<W-30){ if(Math.abs(tx-W/2)>180)trees.push({x:Math.round(tx),v:R()<0.5?0:1}); tx+=W*(0.13+R()*0.13); }
+    buildSky();
+  }
+
+
+  var clouds,drops,stars;
+  function wx(){
+    if(weather==="clear")return {cl:0,pr:"none"};
+    if(weather==="partly")return {cl:2,pr:"none"};
+    if(weather==="cloudy")return {cl:5,pr:"none"};
+    if(weather==="rain")return {cl:4,pr:"rain"};
+    return {cl:4,pr:"snow"};
+  }
+  function buildSky(){
+    clouds=[];drops=[];stars=[];
+    var w=wx(), top=H*0.04, bot=(waterTopRow*PIXEL)-8, R=srng(seedV*3+7);
+    var nC=Math.min(7,w.cl+(w.pr!=="none"?2:0));
+    for(var i=0;i<nC;i++)clouds.push({x:R()*W,y:top+R()*(bot-top)*0.7,s:3+Math.floor(R()*3),p:R()*TAU,a:10+R()*14});
+    if(w.pr!=="none"){var n=w.pr==="snow"?90:140;for(var d=0;d<n;d++)drops.push({x:R()*W,y:R()*bot,p:R()*TAU,k:w.pr==="snow"?1+Math.floor(R()*2):9+Math.floor(R()*4)});}
+    for(var s2=0;s2<70;s2++)stars.push({x:R()*W,y:top+R()*(bot-top)*0.55,p:R()*TAU,m:1+Math.floor(R()*3)});
+    rainTop=0;rainBot=bot+40;
+  }
+  var rainTop,rainBot;
+
+  var sunX=Math.round(W*0.86), sunR=28;
+  function pixDisc(cx,cy,r){var P=PIXEL,x,y;for(y=-r;y<=r;y+=P)for(x=-r;x<=r;x+=P)if(x*x+y*y<=r*r)ctx.fillRect(Math.round(cx+x),Math.round(cy+y),P,P);}
+  function drawCelestial(sunY,ph){
+    if(C.phase.body==="moon"){ctx.fillStyle=C.moon;pixDisc(sunX,sunY,sunR);ctx.fillStyle=C.bg;pixDisc(sunX+sunR*0.55,sunY-sunR*0.28,sunR*0.92);return;}
+    ctx.fillStyle=C.sun;pixDisc(sunX,sunY,sunR);
+    if(weather==="cloudy"||weather==="rain"||weather==="snow")return;
+    ctx.strokeStyle=C.sun;ctx.lineWidth=Math.max(2,PIXEL-1);
+    var rot=ph/8, pulse=Math.sin(ph*2)*2.5;           // rays turn 45deg per loop: 8-fold symmetric, so it loops
+    for(var a=0;a<8;a++){var an=a*Math.PI/4+rot,r0=sunR+6,r1=sunR+15+pulse;ctx.beginPath();ctx.moveTo(sunX+Math.cos(an)*r0,sunY+Math.sin(an)*r0);ctx.lineTo(sunX+Math.cos(an)*r1,sunY+Math.sin(an)*r1);ctx.stroke();}
+  }
+  function drawCloud(cx,cy,s){var m=["..####..",".######.","########",".######."];ctx.fillStyle=C.cloud;for(var r=0;r<m.length;r++){var row=m[r];for(var k=0;k<row.length;k++)if(row.charAt(k)==="#")ctx.fillRect(Math.round(cx+k*s),Math.round(cy+r*s),s,s);}}
+  function drawBench(x,seatY,w,ground,cp){ctx.fillStyle=C.T;var pt=Math.max(2,Math.round(cp*1.4));ctx.fillRect(x,seatY,w,pt);ctx.fillRect(x+cp*2,seatY+pt,cp,ground-(seatY+pt));ctx.fillRect(x+w-cp*3,seatY+pt,cp,ground-(seatY+pt));}
+  function within(tt,a,b){return tt>=a&&tt<b;}
+  // blink / ear-twitch frames, swapped in for a few hundred ms
+  var P_BLINK=P_SIT.map(function(r,i){return i===7?".KGGGGGGGGGK.":r;});
+  var D_BLINK=D_SIT.map(function(r,i){return i===3?".OOOOOOO.":r;});
+  var D_EAR=D_SIT.map(function(r,i){return i===0?"..O......":i===1?".OO...O..":r;});
+
+  function render(tt){
+    tt=((tt%LOOP)+LOOP)%LOOP;
+    var ph=TAU*tt/LOOP, i, cx, wr, p, w=wx();
+    ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+    if(C.d&&w.cl<=2&&w.pr==="none"){ctx.fillStyle=C.star;for(i=0;i<stars.length;i++){p=stars[i];var tw=0.5+0.5*Math.sin(ph*p.m+p.p);if(tw>0.4){ctx.globalAlpha=tw;ctx.fillRect(p.x,p.y,2,2);}}ctx.globalAlpha=1;}
+    var sunY=Math.round(H*C.phase.sunY);
+    drawCelestial(sunY,ph);
+    for(i=0;i<clouds.length;i++){var cl=clouds[i];drawCloud(cl.x+Math.sin(ph+cl.p)*cl.a,cl.y+Math.sin(ph*2+cl.p)*2,cl.s);}
+    var span=rainBot-rainTop;
+    if(w.pr==="rain"){ctx.strokeStyle=C.rain;ctx.lineWidth=2;ctx.beginPath();for(i=0;i<drops.length;i++){p=drops[i];var y=rainTop+((p.y+span*p.k*tt/LOOP)%span);ctx.moveTo(p.x,y);ctx.lineTo(p.x-2,y+9);}ctx.stroke();}
+    else if(w.pr==="snow"){ctx.fillStyle=C.snow;for(i=0;i<drops.length;i++){p=drops[i];var ys=rainTop+((p.y+span*p.k*tt/LOOP)%span);ctx.fillRect(Math.round(p.x+Math.sin(ph*2+p.p)*6),Math.round(ys),3,3);}}
+    for(var ci=0;ci<byColor.length;ci++){var a=byColor[ci],rgb=C.houses[ci];ctx.fillStyle="rgba("+rgb[0]+","+rgb[1]+","+rgb[2]+","+C.houseA+")";for(i=0;i<a.length;i+=2)cell(a[i],a[i+1]);}
+    // windows: at night a few go dark and come back during the loop
+    ctx.fillStyle=C.win;for(i=0;i<lit.length;i+=2){var j=i>>1;if(C.d&&j%23===5&&within(tt,1800+(j%7)*400,4600+(j%5)*500))continue;cell(lit[i],lit[i+1]);}
+    var wob=Math.sin(ph);
+    for(cx=0;cx<cellsX;cx++){if(colTop[cx]<0)continue;var rg=C.houses[colCol[cx]];ctx.fillStyle="rgba("+rg[0]+","+rg[1]+","+rg[2]+","+C.reflA+")";var depth=Math.min(6,waterBotRow-waterTopRow);for(var k=1;k<=depth;k++){if(Math.sin(cx*0.3+ph*2+k)<0.35)continue;cell(cx+Math.round(wob+Math.sin(ph*2+cx*0.2)),waterTopRow+k);}}
+    ctx.fillStyle=C.water;
+    for(wr=waterTopRow;wr<=waterBotRow;wr++)for(cx=0;cx<cellsX;cx++)if(Math.sin(cx*0.22+ph*2+wr*0.7)>0.82)cell(cx,wr);
+    for(i=0;i<boats.length;i++){var b=boats[i];sprC(BOAT,b.x,b.y+Math.round(Math.sin(ph*2+b.ph)*1.5),PIXEL,C.boat);}
+    ctx.fillStyle=C.quay;ctx.fillRect(0,promY,W,Math.max(2,PIXEL-1));
+    for(i=0;i<trees.length;i++){var tm=trees[i].v?TREE_B:TREE_A;spr(tm,trees[i].x-Math.floor(tm[0].length/2)*treePix,promY-tm.length*treePix,treePix);}
+    var cp=CP, aw=P_SIT[0].length, dw=D_SIT[0].length, dh=D_SIT.length;
+    var gap=2*cp, pairW=dw*cp+gap+aw*cp, ground=promY, ccx=Math.round(W/2-pairW/2), seatY=ground-5*cp;
+    drawBench(ccx-cp,seatY,pairW+2*cp,ground,cp);
+    var sandoX=ccx, amrithX=ccx+dw*cp+gap;
+    var dog=within(tt,2400,2560)||within(tt,6900,7060)?D_BLINK:within(tt,4600,5000)?D_EAR:D_SIT;
+    var me=within(tt,1100,1260)||within(tt,5600,5760)?P_BLINK:P_SIT;
+    spr(dog,sandoX,seatY-dh*cp,cp);
+    spr(me,amrithX,seatY-16*cp,cp);
+    ctx.fillStyle=C.d?"rgba(236,227,211,0.92)":"rgba(33,28,22,0.9)";
+    ctx.font='34px "Departure Mono", ui-monospace, monospace';
+    ctx.textAlign="left"; ctx.textBaseline="middle";
+    ctx.fillText("@amrith", Math.round(W*0.05), Math.round(H*0.15));
+    ctx.textBaseline="alphabetic";
+  }
+  window.__render=render;
+  window.__frame=function(tt){render(tt);return canvas.toDataURL("image/png");};
+  window.__loop=LOOP;
+  var t0=performance.now();
+  function tick(now){render(now-t0);requestAnimationFrame(tick);}
+  function restart(){C=pal();buildSky();}
+  document.querySelectorAll("[data-w]").forEach(function(b){b.classList.toggle("on",b.dataset.w===weather);b.onclick=function(){weather=b.dataset.w;document.querySelectorAll("[data-w]").forEach(function(x){x.classList.toggle("on",x===b);});restart();};});
+  document.querySelectorAll("[data-s]").forEach(function(b){b.classList.toggle("on",b.dataset.s===sky);b.onclick=function(){sky=b.dataset.s;document.querySelectorAll("[data-s]").forEach(function(x){x.classList.toggle("on",x===b);});restart();};});
+  function go(){build();window.__ready=true;if(!capture)requestAnimationFrame(tick);else render(0);}
+  if(document.fonts&&document.fonts.load)document.fonts.load('30px "Departure Mono"').then(go,go);else go();
+})();
+</script>
+</body>
+</html>

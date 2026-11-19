@@ -1,0 +1,15 @@
+{
+	"name": "amrith",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"stage": "node scripts/stage.mjs",
+		"dev": "npm run stage && cf dev",
+		"deploy": "npm run stage && CLOUDFLARE_ACCOUNT_ID=fb68f7695762f636f5e83bdb527aceb8 cf deploy"
+	},
+	"devDependencies": {
+		"@cloudflare/vite-plugin": "2.0.0-beta.v.8",
+		"cf": "1.0.0-beta.19",
+		"vite": "8.3.5"
+	}
+}
