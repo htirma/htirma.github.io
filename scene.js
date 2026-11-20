@@ -172,24 +172,32 @@
   // so twilight skies are kept genuinely deep — keeps text readable all evening.
   var PN={night:1.0,light:[255,255,255],lightAmt:0,bg:[14,14,16]};                  // night
   var PM={night:0.0,light:[255,255,255],lightAmt:0,bg:[244,238,223]};               // midday
+  // Timed to how Amsterdam actually looks: the sky keeps its sunrise/sunset warmth
+  // right up to the horizon and only turns deep once the sun is a few degrees down
+  // (civil twilight), so the page is not dark before it is dark outside.
   var RISE=[
     {alt:-12,p:PN},
-    {alt:-6, p:{night:0.86,light:[80,110,200], lightAmt:0.33,bg:[28,34,62]}}, // dawn blue hour
-    {alt:0,  p:{night:0.50,light:[150,140,200],lightAmt:0.40,bg:[44,46,82]}}, // dawn twilight (deep periwinkle)
-    {alt:4,  p:{night:0.16,light:[255,205,155],lightAmt:0.45,bg:[250,224,200]}}, // sunrise (peach)
-    {alt:10, p:{night:0.05,light:[245,242,228],lightAmt:0.16,bg:[239,238,226]}}, // morning
+    {alt:-8, p:{night:0.86,light:[80,110,200], lightAmt:0.33,bg:[28,34,62]}}, // dawn blue hour
+    {alt:-4, p:{night:0.50,light:[150,140,200],lightAmt:0.40,bg:[44,46,82]}}, // dawn twilight (deep periwinkle)
+    {alt:0,  p:{night:0.16,light:[255,205,155],lightAmt:0.45,bg:[250,224,200]}}, // sunrise (peach)
+    {alt:6,  p:{night:0.05,light:[245,242,228],lightAmt:0.16,bg:[239,238,226]}}, // morning
     {alt:16, p:PM}
   ];
   var SET=[
     {alt:-12,p:PN},
-    {alt:-6, p:{night:0.88,light:[70,95,185],  lightAmt:0.36,bg:[24,30,56]}}, // dusk blue hour
-    {alt:0,  p:{night:0.54,light:[200,120,150],lightAmt:0.45,bg:[60,40,64]}}, // dusk twilight (deep plum)
-    {alt:4,  p:{night:0.18,light:[255,165,110],lightAmt:0.52,bg:[252,216,188]}}, // sunset (amber)
-    {alt:10, p:{night:0.05,light:[255,238,206],lightAmt:0.20,bg:[247,236,214]}}, // afternoon
+    {alt:-8, p:{night:0.88,light:[70,95,185],  lightAmt:0.36,bg:[24,30,56]}}, // dusk blue hour
+    {alt:-4, p:{night:0.54,light:[200,120,150],lightAmt:0.45,bg:[60,40,64]}}, // dusk twilight (deep plum)
+    {alt:0,  p:{night:0.18,light:[255,165,110],lightAmt:0.52,bg:[252,216,188]}}, // sunset (amber)
+    {alt:6,  p:{night:0.05,light:[255,238,206],lightAmt:0.20,bg:[247,236,214]}}, // afternoon
     {alt:16, p:PM}
   ];
   var WHITE=[242,242,244], INK_DARK=[14,14,16], SALT_BONE=[244,238,223];
   function lum(c){return (0.2126*c[0]+0.7152*c[1]+0.0722*c[2])/255;}
+  // WCAG relative luminance and contrast ratio, for keeping page text readable.
+  function rl(c){var o=0,w=[0.2126,0.7152,0.0722];for(var i=0;i<3;i++){var v=c[i]/255;o+=w[i]*(v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));}return o;}
+  function cr(a,b){var x=rl(a),y=rl(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05);}
+  // Step a text colour from ink toward the sky by up to f, but never below ratio min.
+  function fadeText(ink,bg,f,min){var lo=0,hi=f,i;if(cr(lerp3(ink,bg,f),bg)>=min)return lerp3(ink,bg,f);for(i=0;i<16;i++){var m=(lo+hi)/2;if(cr(lerp3(ink,bg,m),bg)>=min)lo=m;else hi=m;}return lerp3(ink,bg,lo);}
 
   function envFor(alt,rising){
     var seq=rising?RISE:SET,i;
@@ -210,14 +218,13 @@
     for(i=0;i<DAY.houses.length;i++)C.houses.push(tint(lerp3(DAY.houses[i],NIGHT.houses[i],n),L,amt).map(Math.round));
     for(k=0;k<COLORKEYS.length;k++){var key=COLORKEYS[k],col=lerp4(DAY[key],NIGHT[key],n);if(!TINTSKIP[key])col=tint(col,L,amt);C[key]=rgba(col);}
     for(k=0;k<INVKEYS.length;k++){var ik=INVKEYS[k];C[ik]=rgba(tint(INV[ik],L,amt));}
-    // Pick text polarity from the sky's luminance: whichever of dark/white text
-    // contrasts better (the two are equal near lum 0.27). On dark skies the text
-    // stays near-white with only a slight step down for secondary/tertiary; on
-    // light skies it fades to the familiar greys. Guarantees legibility on the
-    // medium twilight tones that flat greys washed out on.
-    var tl=smooth(clamp01((0.34-lum(ph.bg))/0.16)),pri=lerp3(INK_DARK,WHITE,tl);
+    // Text is either near-black or near-white, whichever contrasts more with the
+    // sky right now; never a grey in between, which vanished on mid-tone twilight
+    // skies. Secondary and tertiary step toward the sky but stay at or above
+    // 4.5:1 and 3.5:1. tl still eases the decorative colours across the change.
+    var tl=smooth(clamp01((0.34-lum(ph.bg))/0.16)),light=cr(WHITE,ph.bg)>cr(INK_DARK,ph.bg),pri=light?WHITE:INK_DARK;
     C.invader=rgba(lerp3(VIO_DEEP,VIO_LIGHT,tl).concat([0.95]));      // violet that adapts to sky brightness
-    return {C:C,night:n,bg:rgb(ph.bg),tp:rgb(pri),ts:rgb(lerp3(pri,ph.bg,lr(0.40,0.16,tl))),tt:rgb(lerp3(pri,ph.bg,lr(0.58,0.34,tl))),amb:rgb(lerp3(INK_DARK,SALT_BONE,tl))};
+    return {C:C,night:n,bg:rgb(ph.bg),tp:rgb(pri),ts:rgb(fadeText(pri,ph.bg,light?0.16:0.40,4.6)),tt:rgb(fadeText(pri,ph.bg,light?0.34:0.58,3.6)),amb:rgb(light?SALT_BONE:INK_DARK)};
   }
 
   // Fraction of lit windows to show: the canal goes to sleep in the small hours

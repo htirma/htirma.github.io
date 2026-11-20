@@ -32,9 +32,9 @@ export function sun(date: Date, lat = LAT, lon = LON): { alt: number; rising: bo
 
 // Same bands as the sun-phase table in scene.js.
 export function phaseFor(alt: number, rising: boolean): Phase {
-	if (alt >= 10) return "day";
-	if (alt >= 0) return rising ? "sunrise" : "sunset";
-	if (alt >= -6) return rising ? "dawn" : "dusk";
+	if (alt >= 6) return "day";
+	if (alt >= -1) return rising ? "sunrise" : "sunset";
+	if (alt >= -8) return rising ? "dawn" : "dusk";
 	return "night";
 }
 
